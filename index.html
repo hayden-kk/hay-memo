@@ -625,7 +625,8 @@ button{font-family:var(--font);cursor:pointer;}
 // STATE
 // ══════════════════════════════════════════════
 let cards     = JSON.parse(localStorage.getItem('sb3_cards') || '[]');
-let gsUrl     = localStorage.getItem('sb3_gsUrl') || '';
+const DEFAULT_GS = 'https://script.google.com/macros/s/AKfycbyoPhF045it0Lz_6JPBKLT9QX21dIFAKonvHkIB2_-mIeMwrogeU8HR525LPEYbxkYJ/exec';
+let gsUrl     = localStorage.getItem('sb3_gsUrl') || DEFAULT_GS;
 let activeView= 'calendar';
 let calMode   = 'week';
 let calOffset = 0;
