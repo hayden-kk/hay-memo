@@ -350,22 +350,29 @@ button{font-family:var(--font);cursor:pointer;}
 .gs-guide code{background:var(--border2);padding:1px 4px;border-radius:3px;font-family:monospace;font-size:.68rem;}
 
 /* ════ JOURNAL INPUT ════ */
-.jnl-input-zone{background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--r);
-  margin-bottom:14px;overflow:hidden;box-shadow:var(--sh-m);transition:border-color .2s,box-shadow .2s;}
-.jnl-input-zone:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,70,229,.08),var(--sh-m);}
-.jnl-iz-top{background:var(--surface2);border-bottom:1px solid var(--border);
-  padding:6px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.jnl-iz-top span{font-size:.72rem;color:var(--sub);}
-.jnl-name-hint{font-size:.71rem;color:var(--accent);font-weight:600;padding:2px 8px;
-  background:var(--accent-bg);border-radius:8px;display:none;}
-#jnlInput{width:100%;padding:12px 14px;border:none;outline:none;resize:none;
+.jnl-input-zone{background:var(--surface);border:2px solid var(--border2);border-radius:var(--r);
+  margin-bottom:14px;overflow:hidden;box-shadow:var(--sh-m);transition:border-color .25s,box-shadow .25s;}
+.jnl-input-zone:focus-within{box-shadow:0 0 0 3px rgba(79,70,229,.08),var(--sh-m);}
+.jnl-mode-bar{display:flex;gap:0;border-bottom:1px solid var(--border);}
+.jmode{flex:1;padding:8px 4px;border:none;background:var(--surface2);
+  font-size:.76rem;font-weight:700;color:var(--sub);cursor:pointer;transition:all .18s;
+  display:flex;align-items:center;justify-content:center;gap:4px;border-right:1px solid var(--border);}
+.jmode:last-child{border-right:none;}
+.jmode:hover{background:var(--bg);}
+.jmode.active-work {background:var(--bg-leader);color:var(--c-leader);border-bottom:2px solid var(--c-leader);}
+.jmode.active-s    {background:#DCFCE7;color:#15803D;border-bottom:2px solid #16A34A;}
+.jmode.active-i    {background:#FEF3C7;color:#B45309;border-bottom:2px solid #D97706;}
+.jmode.active-c    {background:#F5F3FF;color:#6D28D9;border-bottom:2px solid #7C3AED;}
+.jnl-name-hint{font-size:.71rem;font-weight:600;padding:2px 8px;border-radius:8px;display:none;
+  background:var(--accent-bg);color:var(--accent);}
+#jnlInput{width:100%;padding:13px 14px;border:none;outline:none;resize:none;
   font-size:.9rem;font-family:var(--font);color:var(--text);line-height:1.7;
-  background:var(--surface);min-height:90px;max-height:200px;}
+  background:var(--surface);min-height:88px;max-height:200px;transition:background .2s;}
 #jnlInput::placeholder{color:var(--sub2);}
 .jnl-iz-bot{padding:5px 12px;background:var(--surface2);border-top:1px solid var(--border);
   display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
 .jnl-iz-bot small{font-size:.67rem;color:var(--sub2);}
-.jnl-add-btn{margin-left:auto;padding:5px 16px;border-radius:8px;border:none;
+.jnl-add-btn{margin-left:auto;padding:5px 18px;border-radius:8px;border:none;
   background:var(--accent);color:#fff;font-size:.78rem;font-weight:700;transition:all .18s;}
 .jnl-add-btn:hover{background:var(--accent-h);}
 
@@ -581,20 +588,18 @@ button{font-family:var(--font);cursor:pointer;}
   <section id="viewJournal" style="display:none">
 
     <!-- 자체 입력창 -->
-    <div class="jnl-input-zone">
-      <div class="jnl-iz-top">
-        <span>📓 업무기록 · @이름 입력 시 팀원 관찰로 자동 분류</span>
-        <span class="jnl-name-hint" id="jnlNameHint"></span>
+    <div class="jnl-input-zone" id="jnlInputZone">
+      <div class="jnl-mode-bar">
+        <button class="jmode active-work" id="jmWork"  onclick="setJnlMode('work')">📋 업무기록</button>
+        <button class="jmode"             id="jmS"     onclick="setJnlMode('강점')">⭐ 강점</button>
+        <button class="jmode"             id="jmI"     onclick="setJnlMode('개선')">🔧 개선</button>
+        <button class="jmode"             id="jmC"     onclick="setJnlMode('코칭')">💬 코칭</button>
       </div>
-      <textarea id="jnlInput" placeholder="업무 내용, 미팅 메모, 결정 사항 자유롭게 기록&#10;예) 오전 오아시스 재고 점검 완료&#10;예) @김지수 고객 응대 매우 능숙함 #강점&#10;예) @이철민 보고서 기한 초과, 개선 필요 #개선"></textarea>
+      <textarea id="jnlInput"></textarea>
       <div class="jnl-iz-bot">
-        <small>Shift+Enter 줄바꿈 · Enter 저장 · 이 탭의 기록은 캘린더·보드에 반영되지 않음</small>
-        <div class="comp-tags" id="jnlCompTagBtns" style="display:none">
-          <button class="ctag s" id="jctS" onclick="toggleJnlCompTag('강점')">⭐ #강점</button>
-          <button class="ctag i" id="jctI" onclick="toggleJnlCompTag('개선')">🔧 #개선</button>
-          <button class="ctag c" id="jctC" onclick="toggleJnlCompTag('코칭')">💬 #코칭</button>
-        </div>
-        <button class="jnl-add-btn" onclick="addJournalEntry()">저장 ↵</button>
+        <span class="jnl-name-hint" id="jnlNameHint"></span>
+        <small id="jnlHint">Shift+Enter 줄바꿈 · Enter 저장</small>
+        <button class="jnl-add-btn" id="jnlAddBtn" onclick="addJournalEntry()">저장 ↵</button>
       </div>
     </div>
 
@@ -785,53 +790,84 @@ function extractTags(text){
   return [...new Set(tags)].slice(0,3);
 }
 
-// ── Journal entry ────────────────────────────
+// ── Journal mode & entry ──────────────────────
+let jnlMode = 'work'; // 'work' | '강점' | '개선' | '코칭'
+
+const JNL_MODE_CFG = {
+  work: { cls:'active-work', ph:'업무 내용, 미팅, 결정 사항을 자유롭게 기록하세요\n예) 오아시스 재고 점검 완료\n예) 주간 보고서 작성', bg:'', border:'' },
+  강점: { cls:'active-s',    ph:'@이름 + 강점 관찰 내용\n예) @김지수 고객 응대 매우 능숙함\n예) @박민준님 기한 내 완벽한 보고서 제출', bg:'#F0FDF4', border:'#16A34A' },
+  개선: { cls:'active-i',    ph:'@이름 + 개선이 필요한 상황\n예) @이철민 보고서 기한 초과\n예) @최수진 고객 응대 미숙, 코칭 필요', bg:'#FFFBEB', border:'#D97706' },
+  코칭: { cls:'active-c',    ph:'@이름 + 코칭 내용 또는 면담 메모\n예) @김지수 업무 방향성 면담\n예) @박민준 목표 설정 코칭 진행', bg:'#FAF5FF', border:'#7C3AED' },
+};
+
+function setJnlMode(mode){
+  jnlMode = mode;
+  // 버튼 스타일 초기화
+  ['jmWork','jmS','jmI','jmC'].forEach(id=>{
+    const b=document.getElementById(id);
+    if(b) b.className='jmode';
+  });
+  const idMap={work:'jmWork',강점:'jmS',개선:'jmI',코칭:'jmC'};
+  const btn=document.getElementById(idMap[mode]);
+  const cfg=JNL_MODE_CFG[mode];
+  if(btn) btn.className=`jmode ${cfg.cls}`;
+
+  const ta=document.getElementById('jnlInput');
+  const zone=document.getElementById('jnlInputZone');
+  if(ta){ ta.placeholder=cfg.ph; ta.style.background=cfg.bg||''; ta.focus(); }
+  if(zone) zone.style.borderColor=cfg.border||'var(--border2)';
+
+  // 버튼 색도 모드에 맞게
+  const addBtn=document.getElementById('jnlAddBtn');
+  const colorMap={work:'var(--accent)',강점:'#16A34A',개선:'#D97706',코칭:'#7C3AED'};
+  if(addBtn) addBtn.style.background=colorMap[mode];
+
+  const hint=document.getElementById('jnlNameHint');
+  if(hint&&mode!=='work'){ hint.textContent='@이름 을 포함해 입력하세요'; hint.style.display='inline-flex'; hint.style.background=''; hint.style.color='var(--sub)'; }
+  else if(hint){ hint.style.display='none'; }
+}
+
 function addJournalEntry(){
   const el=document.getElementById('jnlInput');
   const text=el.value.trim();
   if(!text){el.style.outline='2px solid var(--c-issue)';setTimeout(()=>el.style.outline='',700);return;}
   const names=extractNames(text);
-  const compTag=extractCompTag(text)||pendingJnlCompTag||null;
-  const isPeople=names.length>0;
+  const compTag = jnlMode==='work' ? null : jnlMode;
+  const isPeople = jnlMode!=='work' || names.length>0;
   const entry={id:Date.now(),text,names,compTag,isPeople,createdAt:new Date().toISOString()};
   journal.unshift(entry);saveJournal();
   el.value='';el.style.height='auto';
-  pendingJnlCompTag=null;updateJnlCompTagUI(null);
-  document.getElementById('jnlCompTagBtns').style.display='none';
-  document.getElementById('jnlNameHint').style.display='none';
   renderJournal();
-  const msg=isPeople?`👥 팀원 관찰 저장 · ${names.join(', ')}${compTag?' · #'+compTag:''}`:'📋 업무기록 저장';
-  toast(msg, isPeople?'#2563EB':'#7C3AED');
+  const colorMap={work:'#7C3AED',강점:'#16A34A',개선:'#D97706',코칭:'#7C3AED'};
+  const msgMap={
+    work:'📋 업무기록 저장',
+    강점:`⭐ 강점 기록 저장${names.length?' · '+names.join(', '):''}`,
+    개선:`🔧 개선 기록 저장${names.length?' · '+names.join(', '):''}`,
+    코칭:`💬 코칭 기록 저장${names.length?' · '+names.join(', '):''}`,
+  };
+  toast(msgMap[jnlMode], colorMap[jnlMode]);
+
+  // 팀원 모드면 이름 힌트 유지, 업무모드면 초기화
+  if(jnlMode!=='work'){
+    const hint=document.getElementById('jnlNameHint');
+    if(hint){hint.textContent='@이름 을 포함해 입력하세요';hint.style.display='inline-flex';}
+  }
 }
-function toggleJnlCompTag(tag){
-  const el=document.getElementById('jnlInput');
-  el.value=el.value.replace(/#강점|#개선|#코칭/g,'').trimEnd();
-  if(pendingJnlCompTag===tag){pendingJnlCompTag=null;}
-  else{pendingJnlCompTag=tag;el.value+=' #'+tag;}
-  updateJnlCompTagUI(pendingJnlCompTag);el.focus();
-}
-function updateJnlCompTagUI(active){
-  [{id:'jctS',t:'강점'},{id:'jctI',t:'개선'},{id:'jctC',t:'코칭'}].forEach(({id,t})=>{
-    const b=document.getElementById(id);if(b)b.classList.toggle('on',active===t);
-  });
-}
+
 document.addEventListener('DOMContentLoaded',()=>{
+  // 초기 모드 적용
+  setJnlMode('work');
   const ji=document.getElementById('jnlInput');
   if(!ji)return;
   ji.addEventListener('input',function(){
     this.style.height='auto';this.style.height=Math.min(this.scrollHeight,200)+'px';
-    const names=extractNames(this.value);
-    const ct=extractCompTag(this.value);
-    const hint=document.getElementById('jnlNameHint');
-    const ctb=document.getElementById('jnlCompTagBtns');
-    if(names.length){
-      hint.textContent='👤 '+names.join(', ');hint.style.display='inline-flex';
-      ctb.style.display='flex';
-    } else {
-      hint.style.display='none';
-      ctb.style.display='none';
+    // 이름 감지 힌트 (팀원 모드일 때만)
+    if(jnlMode!=='work'){
+      const names=extractNames(this.value);
+      const hint=document.getElementById('jnlNameHint');
+      if(hint&&names.length){hint.textContent='👤 '+names.join(', ');hint.style.color='var(--accent)';}
+      else if(hint){hint.textContent='@이름 을 포함해 입력하세요';hint.style.color='var(--sub)';}
     }
-    if(ct&&ct!==pendingJnlCompTag){pendingJnlCompTag=ct;updateJnlCompTagUI(ct);}
   });
   ji.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();addJournalEntry();}});
 });
