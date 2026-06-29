@@ -349,6 +349,86 @@ button{font-family:var(--font);cursor:pointer;}
   color:var(--sub);margin-bottom:10px;}
 .gs-guide code{background:var(--border2);padding:1px 4px;border-radius:3px;font-family:monospace;font-size:.68rem;}
 
+/* ════ COMPETENCY TAGS ════ */
+.comp-tags{display:flex;gap:4px;margin-left:4px;}
+.ctag{padding:2px 8px;border-radius:10px;border:1.5px solid var(--border2);
+  font-size:.68rem;font-weight:700;cursor:pointer;transition:all .15s;background:var(--surface);}
+.ctag.s{border-color:#16A34A;color:#16A34A;}.ctag.s.on{background:#DCFCE7;}
+.ctag.i{border-color:#D97706;color:#D97706;}.ctag.i.on{background:#FEF3C7;}
+.ctag.c{border-color:#7C3AED;color:#7C3AED;}.ctag.c.on{background:#F5F3FF;}
+.tag-strength{background:#DCFCE7;color:#15803D;font-size:.65rem;padding:2px 6px;border-radius:6px;font-weight:700;}
+.tag-improve{background:#FEF3C7;color:#B45309;font-size:.65rem;padding:2px 6px;border-radius:6px;font-weight:700;}
+.tag-coach{background:#F5F3FF;color:#6D28D9;font-size:.65rem;padding:2px 6px;border-radius:6px;font-weight:700;}
+
+/* ════ PERFORMANCE REPORT TAB ════ */
+.rp-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:900px){.rp-layout{grid-template-columns:1fr;}}
+.rp-card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);
+  padding:16px;box-shadow:var(--sh-s);}
+.rp-card h3{font-size:.82rem;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:5px;}
+.rp-hdr{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.rp-hdr h2{font-size:.97rem;font-weight:700;}
+.rp-nav{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);
+  background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:.9rem;transition:all .15s;}
+.rp-nav:hover{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
+.rp-period{font-size:.92rem;font-weight:700;min-width:110px;text-align:center;}
+.rp-print-btn{margin-left:auto;padding:5px 14px;border-radius:8px;border:1px solid var(--border);
+  background:var(--surface);font-size:.75rem;font-weight:700;color:var(--sub);transition:all .18s;}
+.rp-print-btn:hover{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
+
+/* bar chart */
+.bar-chart{display:flex;flex-direction:column;gap:8px;}
+.bar-row{display:flex;align-items:center;gap:8px;}
+.bar-label{font-size:.73rem;color:var(--text2);min-width:58px;text-align:right;}
+.bar-track{flex:1;height:18px;background:var(--bg);border-radius:9px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:9px;transition:width .6s ease;display:flex;align-items:center;padding-left:6px;}
+.bar-fill span{font-size:.63rem;color:#fff;font-weight:700;white-space:nowrap;}
+.bar-cnt{font-size:.71rem;color:var(--sub);min-width:22px;}
+
+/* keyword cloud */
+.kw-cloud{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0;}
+.kw-chip{padding:4px 10px;border-radius:14px;font-size:.74rem;font-weight:600;
+  background:var(--accent-bg);color:var(--accent);border:1px solid #C7D2FE;transition:all .15s;}
+.kw-chip:hover{background:var(--accent);color:#fff;}
+.kw-num{font-size:.62rem;opacity:.7;margin-left:3px;}
+
+/* event list */
+.ev-list{display:flex;flex-direction:column;gap:5px;max-height:220px;overflow-y:auto;}
+.ev-item{padding:7px 10px;border-radius:var(--rs);border-left:3px solid;
+  font-size:.78rem;color:var(--text2);line-height:1.4;background:var(--surface2);}
+.ev-item.oasis{border-color:var(--c-oasis);}
+.ev-item.ramen{border-color:var(--c-ramen);}
+.ev-item.issue{border-color:var(--c-issue);}
+.ev-date{font-size:.65rem;color:var(--sub2);margin-bottom:2px;}
+
+/* person detail modal */
+.pdm{max-width:520px;width:95vw;max-height:80vh;overflow-y:auto;}
+.pdm-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.pdm-avatar{width:44px;height:44px;border-radius:50%;background:var(--c-people);
+  color:#fff;font-size:1rem;font-weight:800;display:flex;align-items:center;justify-content:center;}
+.pdm-name{font-size:1rem;font-weight:800;}
+.pdm-meta{font-size:.74rem;color:var(--sub);}
+.ratio-bar{display:flex;border-radius:8px;overflow:hidden;height:10px;margin:8px 0 4px;gap:1px;}
+.rb-s{background:#16A34A;}.rb-i{background:#D97706;}.rb-c{background:#7C3AED;}
+.ratio-labels{display:flex;gap:10px;font-size:.68rem;margin-bottom:12px;}
+.rl-s{color:#16A34A;font-weight:700;}.rl-i{color:#D97706;font-weight:700;}.rl-c{color:#7C3AED;font-weight:700;}
+.growth-chart{margin:10px 0 14px;}
+.gc-label{font-size:.72rem;color:var(--sub);margin-bottom:6px;font-weight:600;}
+.mini-bars{display:flex;align-items:flex-end;gap:3px;height:40px;}
+.mb{min-width:14px;border-radius:3px 3px 0 0;background:var(--accent-bg);border:1px solid #C7D2FE;
+  position:relative;transition:height .4s;}
+.mb:hover::after{content:attr(data-tip);position:absolute;bottom:105%;left:50%;transform:translateX(-50%);
+  background:#1F2937;color:#fff;padding:2px 6px;border-radius:4px;font-size:.62rem;white-space:nowrap;z-index:10;}
+.pdm-timeline{display:flex;flex-direction:column;gap:0;}
+.pdm-entry{padding:8px 10px;border-left:3px solid var(--c-people);border-bottom:1px solid var(--border);
+  font-size:.79rem;color:var(--text2);line-height:1.45;}
+.pdm-entry:last-child{border-bottom:none;}
+.pdm-edate{font-size:.65rem;color:var(--sub2);margin-bottom:2px;}
+
+/* ratio badge on person card */
+.pc-ratio{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap;}
+.prc{padding:1px 6px;border-radius:7px;font-size:.65rem;font-weight:700;}
+
 /* ════ TOAST ════ */
 .toasts{position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:5px;z-index:300;}
 .toast{padding:8px 14px;border-radius:9px;font-size:.78rem;color:#fff;box-shadow:var(--sh-l);
@@ -379,6 +459,7 @@ button{font-family:var(--font);cursor:pointer;}
     <button class="nav-btn active" onclick="switchView('calendar',this)">📅 캘린더</button>
     <button class="nav-btn" onclick="switchView('board',this)">📋 보드</button>
     <button class="nav-btn" onclick="switchView('journal',this)">📓 업무일지</button>
+    <button class="nav-btn" onclick="switchView('report',this)">📊 성과</button>
   </nav>
   <div class="hdr-right">
     <div class="sw">
@@ -407,7 +488,12 @@ button{font-family:var(--font);cursor:pointer;}
       <textarea id="memoInput" rows="4"
         placeholder="예) 오아시스 음료기계 변경 — 탄산수&#10;예) @김지수 오늘 마감 기한 잘 지킴, 꼼꼼함&#10;예) 내일 오후 2시 라면존 재고 확인&#10;예) 8h DS > 11명 / 4h DS > 15명"></textarea>
       <div class="np-bot">
-        <small>Shift+Enter 줄바꿈 · Enter 추가 · @이름 입력 시 팀원 기록으로 분류</small>
+        <small>Shift+Enter 줄바꿈 · Enter 추가 · @이름 + #강점/#개선/#코칭 으로 역량 기록</small>
+        <div class="comp-tags" id="compTagBtns" style="display:none">
+          <button class="ctag s" id="ctS" onclick="toggleCompTag('강점')">⭐ #강점</button>
+          <button class="ctag i" id="ctI" onclick="toggleCompTag('개선')">🔧 #개선</button>
+          <button class="ctag c" id="ctC" onclick="toggleCompTag('코칭')">💬 #코칭</button>
+        </div>
         <span class="cat-preview" id="catPreview">📌 리더메모</span>
       </div>
     </div>
@@ -482,6 +568,19 @@ button{font-family:var(--font);cursor:pointer;}
     </div>
   </section>
 
+  <!-- 성과 리포트 -->
+  <section id="viewReport" style="display:none">
+    <div class="rp-hdr">
+      <h2>📊 성과 리포트</h2>
+      <button class="rp-nav" onclick="rpNav(-1)">‹</button>
+      <span class="rp-period" id="rpPeriod">—</span>
+      <button class="rp-nav" onclick="rpNav(1)">›</button>
+      <button class="rp-nav" onclick="rpOffset=0;renderReport()" style="width:auto;padding:0 8px;font-size:.7rem;font-weight:600;">이번달</button>
+      <button class="rp-print-btn" onclick="printReport()">🖨 인쇄 / PDF</button>
+    </div>
+    <div class="rp-layout" id="rpGrid"></div>
+  </section>
+
 </main>
 
 <!-- MODALS -->
@@ -513,6 +612,12 @@ button{font-family:var(--font);cursor:pointer;}
     </div>
   </div>
 </div>
+<div class="modal-bg" id="personDetailModal">
+  <div class="modal pdm">
+    <div id="pdmContent"></div>
+    <div class="mfooter"><button class="btn-cancel" onclick="closeModal('personDetailModal')">닫기</button></div>
+  </div>
+</div>
 <div class="toasts" id="toasts"></div>
 
 <script>
@@ -527,8 +632,10 @@ let calOffset = 0;
 let filterCat = 'all';
 let moveTargetId = null;
 let dragId    = null;
-let jnlOffset = 0;       // days from today
-let jnlView   = 'daily'; // 'daily' | 'people'
+let jnlOffset = 0;
+let jnlView   = 'daily';
+let rpOffset  = 0;         // months from current
+let pendingCompTag = null; // '강점'|'개선'|'코칭'|null
 
 const CATS = {
   schedule:{ icon:'📅', label:'일정알림', hex:'#D97706', bg:'var(--bg-schedule)', c:'var(--c-schedule)' },
@@ -604,6 +711,30 @@ function extractTags(text){
   return [...new Set(tags)].slice(0,3);
 }
 
+// ── Competency tag ────────────────────────────
+function extractCompTag(text){
+  if(/#강점/.test(text)) return '강점';
+  if(/#개선/.test(text)) return '개선';
+  if(/#코칭/.test(text)) return '코칭';
+  return null;
+}
+function toggleCompTag(tag){
+  const el=document.getElementById('memoInput');
+  // Remove any existing comp tag text from textarea
+  el.value = el.value.replace(/#강점|#개선|#코칭/g,'').trimEnd();
+  if(pendingCompTag===tag){ pendingCompTag=null; }
+  else { pendingCompTag=tag; el.value += ' #'+tag; }
+  updateCompTagUI(pendingCompTag);
+  el.focus();
+}
+function updateCompTagUI(active){
+  ['강점','개선','코칭'].forEach(t=>{
+    const map={강점:'S',개선:'I',코칭:'C'};
+    const btn=document.getElementById('ct'+map[t]);
+    if(btn) btn.classList.toggle('on', active===t);
+  });
+}
+
 // ── Add memo ─────────────────────────────────
 function addMemo(){
   const el=document.getElementById('memoInput');
@@ -611,17 +742,19 @@ function addMemo(){
   if(!text){el.style.outline='2px solid var(--c-issue)';setTimeout(()=>el.style.outline='',700);return;}
   const names=extractNames(text);
   const cat=classify(text,names);
-  const date=parseDate(text);   // always returns a date (today if no date found)
+  const date=parseDate(text);
   const tags=extractTags(text);
   const urgent=/긴급|urgent/i.test(text);
-  const card={id:Date.now(),text,cat,date:date.toISOString(),tags,urgent,names,createdAt:new Date().toISOString()};
+  const compTag=extractCompTag(text)||pendingCompTag||null;
+  const card={id:Date.now(),text,cat,date:date.toISOString(),tags,urgent,names,compTag,createdAt:new Date().toISOString()};
   cards.unshift(card);save();renderAll();
   let msg = `${CATS[cat].icon} ${CATS[cat].label}으로 분류`;
   if(names.length) msg += ` · 팀원: ${names.join(', ')}`;
+  if(compTag) msg += ` · #${compTag}`;
   toast(msg, CATS[cat].hex);
   if(Notification.permission==='granted') schedNotif(card,date);
   if(gsUrl) syncGS(card);
-  el.value='';el.style.height='auto';updatePreview('');
+  el.value='';el.style.height='auto';pendingCompTag=null;updatePreview('');
 }
 function save(){localStorage.setItem('sb3_cards',JSON.stringify(cards));}
 function ymd(d){const dt=new Date(d);return `${dt.getFullYear()}-${dt.getMonth()}-${dt.getDate()}`;}
@@ -633,15 +766,17 @@ function todayYmd(){return ymd(new Date());}
 function switchView(v,el){
   activeView=v;
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');
-  document.getElementById('viewCalendar').style.display  = v==='calendar'?'':'none';
-  document.getElementById('viewBoard').style.display     = v==='board'?'':'none';
-  document.getElementById('viewJournal').style.display   = v==='journal'?'':'none';
+  document.getElementById('viewCalendar').style.display = v==='calendar'?'':'none';
+  document.getElementById('viewBoard').style.display    = v==='board'?'':'none';
+  document.getElementById('viewJournal').style.display  = v==='journal'?'':'none';
+  document.getElementById('viewReport').style.display   = v==='report'?'':'none';
   renderAll();
 }
 function renderAll(){
   if(activeView==='calendar') renderCalendar();
   else if(activeView==='board') renderBoard();
-  else renderJournal();
+  else if(activeView==='journal') renderJournal();
+  else if(activeView==='report') renderReport();
 }
 
 // ══════════════════════════════════════════════
@@ -777,8 +912,10 @@ function cardHtml(c,q=''){
   const t=new Date(c.createdAt).toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
   let body=escH(c.text);
   if(q)body=body.replace(new RegExp(`(${escR(q)})`,'gi'),'<span class="hl">$1</span>');
+  const compTagMap={강점:'<span class="tag-strength">⭐ 강점</span>',개선:'<span class="tag-improve">🔧 개선</span>',코칭:'<span class="tag-coach">💬 코칭</span>'};
   const tags=[
     c.urgent?'<span class="tag tag-urgent">🚨 긴급</span>':'',
+    c.compTag?compTagMap[c.compTag]:'',
     ...(c.names||[]).map(n=>`<span class="tag tag-person">@${n}</span>`),
     ...c.tags.slice(0,1).map(d=>`<span class="tag tag-date">📅 ${d}</span>`)
   ].filter(Boolean).join('');
@@ -915,19 +1052,39 @@ function renderJnlPeople(){
   }
   grid.innerHTML=Object.entries(personMap).sort((a,b)=>b[1].length-a[1].length).map(([name,items])=>{
     const recentDate=new Date(Math.max(...items.map(c=>new Date(c.createdAt)))).toLocaleDateString('ko-KR',{month:'short',day:'numeric'});
-    return `<div class="person-full-card">
+    const s=items.filter(c=>c.compTag==='강점').length;
+    const iv=items.filter(c=>c.compTag==='개선').length;
+    const co=items.filter(c=>c.compTag==='코칭').length;
+    const tot=items.length;
+    const ratioBadges=[
+      s?`<span class="prc" style="background:#DCFCE7;color:#15803D">⭐ 강점 ${s}</span>`:'',
+      iv?`<span class="prc" style="background:#FEF3C7;color:#B45309">🔧 개선 ${iv}</span>`:'',
+      co?`<span class="prc" style="background:#F5F3FF;color:#6D28D9">💬 코칭 ${co}</span>`:'',
+    ].filter(Boolean).join('');
+    const ratioBarHtml=tot?`<div class="ratio-bar" style="margin:8px 0 4px">
+      <div class="rb-s" style="flex:${s}"></div>
+      <div class="rb-i" style="flex:${iv}"></div>
+      <div class="rb-c" style="flex:${co}"></div>
+      <div style="flex:${tot-s-iv-co};background:var(--border2)"></div>
+    </div>`:'';
+    return `<div class="person-full-card" style="cursor:pointer" onclick="openPersonDetail('${name}')">
       <div class="pfc-head">
         <div class="pfc-avatar">${name[0]}</div>
-        <div>
+        <div style="flex:1">
           <div class="pfc-name">${name}</div>
-          <div class="pfc-meta">총 ${items.length}건 기록 · 최근 ${recentDate}</div>
+          <div class="pfc-meta">총 ${tot}건 · 최근 ${recentDate}</div>
+          <div class="pc-ratio">${ratioBadges}</div>
         </div>
+        <span style="color:var(--sub2);font-size:.8rem">›</span>
       </div>
+      ${ratioBarHtml}
       <div class="pfc-entries">
-        ${items.map(c=>{
+        ${items.slice(0,3).map(c=>{
           const dt=new Date(c.createdAt).toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-          return `<div class="pfc-entry"><div class="pfc-date">${dt}</div>${escH(c.text)}</div>`;
+          const tagMap={강점:'<span class="tag-strength">⭐</span>',개선:'<span class="tag-improve">🔧</span>',코칭:'<span class="tag-coach">💬</span>'};
+          return `<div class="pfc-entry"><div class="pfc-date">${dt}${c.compTag?` ${tagMap[c.compTag]}`:''}</div>${escH(c.text)}</div>`;
         }).join('')}
+        ${items.length>3?`<div style="font-size:.7rem;color:var(--accent);padding:4px 0;text-align:center">+${items.length-3}건 더 보기 →</div>`:''}
       </div>
     </div>`;
   }).join('');
@@ -1043,6 +1200,12 @@ function updatePreview(text){
   let label=info.icon+' '+info.label;
   if(names.length) label+=` · ${names.join(' ')}`;
   p.textContent=label;p.style.background=info.bg;p.style.color=info.hex;
+  // show competency tag buttons only when names detected
+  const ctb=document.getElementById('compTagBtns');
+  if(ctb) ctb.style.display=names.length?'flex':'none';
+  const ct=extractCompTag(text);
+  if(ct&&ct!==pendingCompTag){pendingCompTag=ct;updateCompTagUI(ct);}
+  else if(!ct&&!text.trim()){pendingCompTag=null;updateCompTagUI(null);}
 }
 document.getElementById('memoInput').addEventListener('input',function(){
   this.style.height='auto';this.style.height=Math.min(this.scrollHeight,260)+'px';updatePreview(this.value);
@@ -1078,6 +1241,172 @@ function exportCSV(){
   cards.forEach(c=>rows.push([new Date(c.createdAt).toLocaleString('ko-KR'),CATS[c.cat].label,'"'+c.text.replace(/"/g,'""')+'"',(c.names||[]).join('/'),c.tags.join('/'),c.urgent?'긴급':'']));
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+rows.map(r=>r.join(',')).join('\n')],{type:'text/csv;charset=utf-8'}));
   a.download=`smartboard_${new Date().toISOString().slice(0,10)}.csv`;a.click();toast('CSV 저장됨','#059669');
+}
+
+// ══════════════════════════════════════════════
+// PERFORMANCE REPORT
+// ══════════════════════════════════════════════
+function rpNav(d){rpOffset+=d;renderReport();}
+
+function renderReport(){
+  const ref=new Date();ref.setDate(1);ref.setHours(0,0,0,0);
+  ref.setMonth(ref.getMonth()+rpOffset);
+  const y=ref.getFullYear(),m=ref.getMonth();
+  const first=new Date(y,m,1),last=new Date(y,m+1,0);last.setHours(23,59,59,999);
+  document.getElementById('rpPeriod').textContent=`${y}년 ${m+1}월`;
+  const mo=cards.filter(c=>{const d=new Date(c.createdAt);return d>=first&&d<=last;});
+
+  // category counts
+  const counts={};ORDER.forEach(k=>counts[k]=mo.filter(c=>c.cat===k).length);
+  const maxCnt=Math.max(1,...Object.values(counts));
+  const catColors={schedule:'#D97706',oasis:'#0D9488',ramen:'#EA580C',people:'#2563EB',leader:'#7C3AED',issue:'#DC2626'};
+  const barChart=`<div class="bar-chart">${ORDER.map(k=>`
+    <div class="bar-row">
+      <span class="bar-label">${CATS[k].icon} ${CATS[k].label}</span>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${Math.max(4,Math.round(counts[k]/maxCnt*100))}%;background:${catColors[k]}">
+          ${counts[k]>0?`<span>${counts[k]}건</span>`:''}
+        </div>
+      </div>
+      <span class="bar-cnt">${counts[k]}</span>
+    </div>`).join('')}</div>`;
+
+  // oasis + ramen events
+  const evCards=mo.filter(c=>c.cat==='oasis'||c.cat==='ramen');
+  const evList=evCards.length
+    ?`<div class="ev-list">${evCards.map(c=>{const dt=new Date(c.createdAt).toLocaleDateString('ko-KR',{month:'short',day:'numeric'});return`<div class="ev-item ${c.cat}"><div class="ev-date">${CATS[c.cat].icon} ${dt}</div>${escH(c.text)}</div>`}).join('')}</div>`
+    :`<div class="jnl-empty" style="padding:20px">이번달 이벤트 없음</div>`;
+
+  // issue resolved
+  const issCards=mo.filter(c=>c.cat==='issue');
+  const issHtml=issCards.length
+    ?`<div class="ev-list">${issCards.map(c=>{const dt=new Date(c.createdAt).toLocaleDateString('ko-KR',{month:'short',day:'numeric'});return`<div class="ev-item issue"><div class="ev-date">🚨 ${dt}</div>${escH(c.text)}</div>`}).join('')}</div>`
+    :`<div class="jnl-empty" style="padding:20px">이번달 이슈 없음</div>`;
+
+  // keywords
+  const kws=extractKeywords(mo.map(c=>c.text));
+  const kwMax=kws[0]?kws[0][1]:1;
+  const kwHtml=kws.length
+    ?`<div class="kw-cloud">${kws.map(([w,n])=>`<span class="kw-chip" style="font-size:${.68+n/kwMax*.22}rem">${w}<span class="kw-num">×${n}</span></span>`).join('')}</div>`
+    :`<div class="jnl-empty" style="padding:16px">키워드 없음</div>`;
+
+  // leader cards (personal work summary)
+  const ldCards=mo.filter(c=>c.cat==='leader');
+  const ldHtml=ldCards.length
+    ?`<div class="ev-list">${ldCards.map(c=>{const dt=new Date(c.createdAt).toLocaleDateString('ko-KR',{month:'short',day:'numeric'});return`<div class="ev-item" style="border-left-color:var(--c-leader)"><div class="ev-date">📌 ${dt}</div>${escH(c.text)}</div>`}).join('')}</div>`
+    :`<div class="jnl-empty" style="padding:20px">리더메모 없음</div>`;
+
+  document.getElementById('rpGrid').innerHTML=`
+    <div class="rp-card"><h3>📊 카테고리별 처리량 <span style="margin-left:auto;font-size:.7rem;color:var(--sub);font-weight:400">총 ${mo.length}건</span></h3>${barChart}</div>
+    <div class="rp-card"><h3>🔑 기여 키워드 TOP 12</h3>${kwHtml}</div>
+    <div class="rp-card"><h3>🫧 오아시스 · 🍜 라면존 이벤트 <span style="margin-left:auto;font-size:.7rem;color:var(--sub);font-weight:400">${evCards.length}건</span></h3>${evList}</div>
+    <div class="rp-card"><h3>🚨 이슈 처리 <span style="margin-left:auto;font-size:.7rem;color:var(--sub);font-weight:400">${issCards.length}건</span></h3>${issHtml}</div>
+    <div class="rp-card" style="grid-column:1/-1"><h3>📌 리더 업무 기록 <span style="margin-left:auto;font-size:.7rem;color:var(--sub);font-weight:400">${ldCards.length}건</span></h3>${ldHtml}</div>`;
+}
+
+function extractKeywords(textList){
+  const stop=new Set(['및','의','을','를','이','가','은','는','에','와','과','로','에서','으로','도','것','그','저','수','더','있','하','됩니다','합니다','있습니다','하고','그리고','하여','되어','입니다','이후','이전','관련','위해','통해','대해','경우','오늘','내일','이번','다음','주','월','일','시','분','번','차','해당','진행','완료','확인','처리','관리','업무','작업','메모','강점','개선','코칭']);
+  const freq={};
+  textList.forEach(text=>{
+    text.replace(/[#@]/g,'').split(/[\s,·—\-\/|>:<>=!?]+/).forEach(w=>{
+      w=w.trim().replace(/[^가-힣a-zA-Z]/g,'');
+      if(w.length>=2&&!stop.has(w)&&!/^\d/.test(w))freq[w]=(freq[w]||0)+1;
+    });
+  });
+  return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,12);
+}
+
+function printReport(){
+  const per=document.getElementById('rpPeriod').textContent;
+  const html=document.getElementById('rpGrid').innerHTML;
+  const w=window.open('','_blank','width=900,height=750');
+  w.document.write(`<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>${per} 성과 리포트</title>
+<style>body{font-family:'Apple SD Gothic Neo','Noto Sans KR',sans-serif;max-width:860px;margin:32px auto;padding:0 24px 60px;color:#111;}
+h1{font-size:16px;font-weight:800;border-bottom:2px solid #111;padding-bottom:8px;margin-bottom:20px;}
+.rp-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.rp-card{border:1px solid #E5E7EB;border-radius:10px;padding:14px;margin-bottom:0;}
+.rp-card h3{font-size:13px;font-weight:700;margin-bottom:10px;}
+.bar-chart{display:flex;flex-direction:column;gap:7px;}
+.bar-row{display:flex;align-items:center;gap:7px;}
+.bar-label{font-size:12px;min-width:62px;text-align:right;}
+.bar-track{flex:1;height:16px;background:#F3F4F6;border-radius:8px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:8px;display:flex;align-items:center;padding-left:5px;}
+.bar-fill span{font-size:11px;color:#fff;font-weight:700;}
+.bar-cnt{font-size:11px;color:#6B7280;min-width:20px;}
+.kw-cloud{display:flex;flex-wrap:wrap;gap:5px;}
+.kw-chip{padding:3px 9px;border-radius:12px;font-size:12px;background:#EEF2FF;color:#4F46E5;border:1px solid #C7D2FE;}
+.kw-num{font-size:10px;opacity:.7;margin-left:2px;}
+.ev-list{display:flex;flex-direction:column;gap:4px;}
+.ev-item{padding:5px 8px;border-left:3px solid #9CA3AF;font-size:12px;background:#F9FAFB;}
+.ev-date{font-size:11px;color:#6B7280;}
+@media print{body{margin:10px;padding:0 10px;}}</style></head><body>
+<h1>${per} 성과 리포트 — 스낵큐레이션파트</h1>
+<div class="rp-layout">${html}</div>
+<script>window.onload=function(){window.print();}<\/script></body></html>`);
+  w.document.close();
+}
+
+// ══════════════════════════════════════════════
+// PERSON DETAIL MODAL
+// ══════════════════════════════════════════════
+function openPersonDetail(name){
+  const items=cards.filter(c=>c.cat==='people'&&(c.names||[]).includes(name));
+  const total=items.length;
+  const s=items.filter(c=>c.compTag==='강점').length;
+  const i=items.filter(c=>c.compTag==='개선').length;
+  const co=items.filter(c=>c.compTag==='코칭').length;
+  const neutral=total-s-i-co;
+
+  // ratio bar
+  const rpct=(n)=>total?Math.round(n/total*100):0;
+  const ratioBar=total?`
+    <div class="ratio-bar">
+      <div class="rb-s" style="flex:${s}"></div>
+      <div class="rb-i" style="flex:${i}"></div>
+      <div class="rb-c" style="flex:${co}"></div>
+      <div style="flex:${neutral};background:var(--border2)"></div>
+    </div>
+    <div class="ratio-labels">
+      <span class="rl-s">⭐ 강점 ${rpct(s)}%</span>
+      <span class="rl-i">🔧 개선 ${rpct(i)}%</span>
+      <span class="rl-c">💬 코칭 ${rpct(co)}%</span>
+      ${neutral?`<span style="color:var(--sub)">기타 ${rpct(neutral)}%</span>`:''}
+    </div>`:'';
+
+  // monthly growth mini bars (last 6 months)
+  const now=new Date(),months=[];
+  for(let k=5;k>=0;k--){const d=new Date(now.getFullYear(),now.getMonth()-k,1);months.push(d);}
+  const mCounts=months.map(d=>{
+    const nxt=new Date(d.getFullYear(),d.getMonth()+1,1);
+    return {label:`${d.getMonth()+1}월`,n:items.filter(c=>new Date(c.createdAt)>=d&&new Date(c.createdAt)<nxt).length};
+  });
+  const mMax=Math.max(1,...mCounts.map(m=>m.n));
+  const growthBars=`<div class="growth-chart">
+    <div class="gc-label">📈 월별 관찰 기록 (최근 6개월)</div>
+    <div class="mini-bars">${mCounts.map(({label,n})=>`
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">
+        <div class="mb" style="width:100%;height:${Math.max(4,Math.round(n/mMax*36))}px;background:${n?'var(--accent-bg)':'var(--bg)'};border-color:${n?'#C7D2FE':'var(--border)'}" data-tip="${label} ${n}건"></div>
+        <span style="font-size:.58rem;color:var(--sub2)">${label}</span>
+      </div>`).join('')}
+    </div>
+  </div>`;
+
+  const timeline=items.map(c=>{
+    const dt=new Date(c.createdAt).toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    const tagMap={강점:'<span class="tag-strength">⭐ 강점</span>',개선:'<span class="tag-improve">🔧 개선</span>',코칭:'<span class="tag-coach">💬 코칭</span>'};
+    return `<div class="pdm-entry"><div class="pdm-edate">${dt}${c.compTag?` ${tagMap[c.compTag]}`:''}</div>${escH(c.text)}</div>`;
+  }).join('');
+
+  document.getElementById('pdmContent').innerHTML=`
+    <div class="pdm-head">
+      <div class="pdm-avatar">${name[0]}</div>
+      <div><div class="pdm-name">${name}</div><div class="pdm-meta">총 ${total}건 기록</div></div>
+    </div>
+    ${ratioBar}
+    ${growthBars}
+    <div class="jnl-section-head" style="margin-bottom:8px">전체 관찰 기록</div>
+    <div class="pdm-timeline">${timeline||'<div class="jnl-empty">기록 없음</div>'}</div>`;
+  document.getElementById('personDetailModal').classList.add('open');
 }
 
 // ══════════════════════════════════════════════
