@@ -349,6 +349,47 @@ button{font-family:var(--font);cursor:pointer;}
   color:var(--sub);margin-bottom:10px;}
 .gs-guide code{background:var(--border2);padding:1px 4px;border-radius:3px;font-family:monospace;font-size:.68rem;}
 
+/* ════ JOURNAL INPUT ════ */
+.jnl-input-zone{background:var(--surface);border:1.5px solid var(--border2);border-radius:var(--r);
+  margin-bottom:14px;overflow:hidden;box-shadow:var(--sh-m);transition:border-color .2s,box-shadow .2s;}
+.jnl-input-zone:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,70,229,.08),var(--sh-m);}
+.jnl-iz-top{background:var(--surface2);border-bottom:1px solid var(--border);
+  padding:6px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.jnl-iz-top span{font-size:.72rem;color:var(--sub);}
+.jnl-name-hint{font-size:.71rem;color:var(--accent);font-weight:600;padding:2px 8px;
+  background:var(--accent-bg);border-radius:8px;display:none;}
+#jnlInput{width:100%;padding:12px 14px;border:none;outline:none;resize:none;
+  font-size:.9rem;font-family:var(--font);color:var(--text);line-height:1.7;
+  background:var(--surface);min-height:90px;max-height:200px;}
+#jnlInput::placeholder{color:var(--sub2);}
+.jnl-iz-bot{padding:5px 12px;background:var(--surface2);border-top:1px solid var(--border);
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.jnl-iz-bot small{font-size:.67rem;color:var(--sub2);}
+.jnl-add-btn{margin-left:auto;padding:5px 16px;border-radius:8px;border:none;
+  background:var(--accent);color:#fff;font-size:.78rem;font-weight:700;transition:all .18s;}
+.jnl-add-btn:hover{background:var(--accent-h);}
+
+/* journal search bar */
+.jnl-search-bar{display:flex;align-items:center;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.jnl-date-input{padding:5px 9px;border:1px solid var(--border2);border-radius:8px;
+  font-size:.76rem;font-family:var(--font);color:var(--text);background:var(--surface);outline:none;
+  transition:border-color .2s;}
+.jnl-date-input:focus{border-color:var(--accent);}
+.jnl-search-label{font-size:.74rem;color:var(--sub);font-weight:600;}
+.jnl-view-tab{display:flex;gap:2px;background:var(--bg);border-radius:7px;padding:2px;margin-left:auto;}
+.jvt2-btn{padding:4px 12px;border-radius:5px;border:none;background:transparent;
+  font-size:.74rem;font-weight:600;color:var(--sub);transition:all .15s;}
+.jvt2-btn.active{background:var(--surface);color:var(--accent);box-shadow:var(--sh-s);}
+
+/* month list view */
+.jnl-month-list{display:flex;flex-direction:column;gap:16px;}
+.jnl-day-group{}
+.jnl-day-label{font-size:.78rem;font-weight:700;color:var(--sub);padding:5px 0;
+  border-bottom:1px solid var(--border);margin-bottom:6px;
+  display:flex;align-items:center;gap:6px;}
+.jnl-day-label .dcnt{font-size:.68rem;background:var(--accent-bg);color:var(--accent);
+  padding:1px 7px;border-radius:8px;font-weight:700;}
+
 /* ════ COMPETENCY TAGS ════ */
 .comp-tags{display:flex;gap:4px;margin-left:4px;}
 .ctag{padding:2px 8px;border-radius:10px;border:1.5px solid var(--border2);
@@ -538,15 +579,38 @@ button{font-family:var(--font);cursor:pointer;}
 
   <!-- 업무일지 -->
   <section id="viewJournal" style="display:none">
-    <div class="jnl-hdr">
-      <h2>📓 업무일지</h2>
+
+    <!-- 자체 입력창 -->
+    <div class="jnl-input-zone">
+      <div class="jnl-iz-top">
+        <span>📓 업무기록 · @이름 입력 시 팀원 관찰로 자동 분류</span>
+        <span class="jnl-name-hint" id="jnlNameHint"></span>
+      </div>
+      <textarea id="jnlInput" placeholder="업무 내용, 미팅 메모, 결정 사항 자유롭게 기록&#10;예) 오전 오아시스 재고 점검 완료&#10;예) @김지수 고객 응대 매우 능숙함 #강점&#10;예) @이철민 보고서 기한 초과, 개선 필요 #개선"></textarea>
+      <div class="jnl-iz-bot">
+        <small>Shift+Enter 줄바꿈 · Enter 저장 · 이 탭의 기록은 캘린더·보드에 반영되지 않음</small>
+        <div class="comp-tags" id="jnlCompTagBtns" style="display:none">
+          <button class="ctag s" id="jctS" onclick="toggleJnlCompTag('강점')">⭐ #강점</button>
+          <button class="ctag i" id="jctI" onclick="toggleJnlCompTag('개선')">🔧 #개선</button>
+          <button class="ctag c" id="jctC" onclick="toggleJnlCompTag('코칭')">💬 #코칭</button>
+        </div>
+        <button class="jnl-add-btn" onclick="addJournalEntry()">저장 ↵</button>
+      </div>
+    </div>
+
+    <!-- 날짜 내비 + 검색 -->
+    <div class="jnl-search-bar">
       <button class="jnl-nav" onclick="jNav(-1)">‹</button>
       <span class="jnl-date" id="jnlDate">—</span>
       <button class="jnl-nav" onclick="jNav(1)">›</button>
-      <button class="jnl-today-btn" onclick="jnlOffset=0;renderJournal()">오늘</button>
-      <div class="jnl-view-toggle">
-        <button class="jvt-btn active" id="jvtDaily" onclick="setJnlView('daily',this)">일간</button>
-        <button class="jvt-btn" id="jvtPeople" onclick="setJnlView('people',this)">팀원별</button>
+      <button class="jnl-today-btn" onclick="jnlOffset=0;jnlSearchDate='';document.getElementById('jnlDatePick').value='';renderJournal()">오늘</button>
+      <span class="jnl-search-label">날짜 검색</span>
+      <input type="date" class="jnl-date-input" id="jnlDatePick" onchange="jnlGoDate(this.value)">
+      <input type="month" class="jnl-date-input" id="jnlMonthPick" onchange="jnlGoMonth(this.value)" placeholder="월별">
+      <div class="jnl-view-tab" style="margin-left:auto">
+        <button class="jvt2-btn active" id="jvtDaily" onclick="setJnlView('daily',this)">일간</button>
+        <button class="jvt2-btn" id="jvtMonth" onclick="setJnlView('month',this)">월별</button>
+        <button class="jvt2-btn" id="jvtPeople" onclick="setJnlView('people',this)">팀원별</button>
       </div>
     </div>
 
@@ -563,9 +627,14 @@ button{font-family:var(--font);cursor:pointer;}
       </div>
     </div>
 
+    <div id="jnlMonthView" style="display:none">
+      <div class="jnl-month-list" id="jnlMonthList"></div>
+    </div>
+
     <div id="jnlPeopleView" style="display:none">
       <div class="jnl-people-grid" id="jnlPeopleGrid"></div>
     </div>
+
   </section>
 
   <!-- 성과 리포트 -->
@@ -624,8 +693,9 @@ button{font-family:var(--font);cursor:pointer;}
 // ══════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════
-let cards     = JSON.parse(localStorage.getItem('sb3_cards') || '[]');
 const DEFAULT_GS = 'https://script.google.com/macros/s/AKfycbyoPhF045it0Lz_6JPBKLT9QX21dIFAKonvHkIB2_-mIeMwrogeU8HR525LPEYbxkYJ/exec';
+let cards     = JSON.parse(localStorage.getItem('sb3_cards') || '[]');
+let journal   = JSON.parse(localStorage.getItem('sb3_journal') || '[]');
 let gsUrl     = localStorage.getItem('sb3_gsUrl') || DEFAULT_GS;
 let activeView= 'calendar';
 let calMode   = 'week';
@@ -635,8 +705,11 @@ let moveTargetId = null;
 let dragId    = null;
 let jnlOffset = 0;
 let jnlView   = 'daily';
-let rpOffset  = 0;         // months from current
-let pendingCompTag = null; // '강점'|'개선'|'코칭'|null
+let jnlSearchDate = '';   // 'YYYY-MM-DD' or ''
+let jnlSearchMonth = '';  // 'YYYY-MM' or ''
+let rpOffset  = 0;
+let pendingCompTag    = null;
+let pendingJnlCompTag = null;
 
 const CATS = {
   schedule:{ icon:'📅', label:'일정알림', hex:'#D97706', bg:'var(--bg-schedule)', c:'var(--c-schedule)' },
@@ -712,6 +785,57 @@ function extractTags(text){
   return [...new Set(tags)].slice(0,3);
 }
 
+// ── Journal entry ────────────────────────────
+function addJournalEntry(){
+  const el=document.getElementById('jnlInput');
+  const text=el.value.trim();
+  if(!text){el.style.outline='2px solid var(--c-issue)';setTimeout(()=>el.style.outline='',700);return;}
+  const names=extractNames(text);
+  const compTag=extractCompTag(text)||pendingJnlCompTag||null;
+  const isPeople=names.length>0;
+  const entry={id:Date.now(),text,names,compTag,isPeople,createdAt:new Date().toISOString()};
+  journal.unshift(entry);saveJournal();
+  el.value='';el.style.height='auto';
+  pendingJnlCompTag=null;updateJnlCompTagUI(null);
+  document.getElementById('jnlCompTagBtns').style.display='none';
+  document.getElementById('jnlNameHint').style.display='none';
+  renderJournal();
+  const msg=isPeople?`👥 팀원 관찰 저장 · ${names.join(', ')}${compTag?' · #'+compTag:''}`:'📋 업무기록 저장';
+  toast(msg, isPeople?'#2563EB':'#7C3AED');
+}
+function toggleJnlCompTag(tag){
+  const el=document.getElementById('jnlInput');
+  el.value=el.value.replace(/#강점|#개선|#코칭/g,'').trimEnd();
+  if(pendingJnlCompTag===tag){pendingJnlCompTag=null;}
+  else{pendingJnlCompTag=tag;el.value+=' #'+tag;}
+  updateJnlCompTagUI(pendingJnlCompTag);el.focus();
+}
+function updateJnlCompTagUI(active){
+  [{id:'jctS',t:'강점'},{id:'jctI',t:'개선'},{id:'jctC',t:'코칭'}].forEach(({id,t})=>{
+    const b=document.getElementById(id);if(b)b.classList.toggle('on',active===t);
+  });
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  const ji=document.getElementById('jnlInput');
+  if(!ji)return;
+  ji.addEventListener('input',function(){
+    this.style.height='auto';this.style.height=Math.min(this.scrollHeight,200)+'px';
+    const names=extractNames(this.value);
+    const ct=extractCompTag(this.value);
+    const hint=document.getElementById('jnlNameHint');
+    const ctb=document.getElementById('jnlCompTagBtns');
+    if(names.length){
+      hint.textContent='👤 '+names.join(', ');hint.style.display='inline-flex';
+      ctb.style.display='flex';
+    } else {
+      hint.style.display='none';
+      ctb.style.display='none';
+    }
+    if(ct&&ct!==pendingJnlCompTag){pendingJnlCompTag=ct;updateJnlCompTagUI(ct);}
+  });
+  ji.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();addJournalEntry();}});
+});
+
 // ── Competency tag ────────────────────────────
 function extractCompTag(text){
   if(/#강점/.test(text)) return '강점';
@@ -758,6 +882,7 @@ function addMemo(){
   el.value='';el.style.height='auto';pendingCompTag=null;updatePreview('');
 }
 function save(){localStorage.setItem('sb3_cards',JSON.stringify(cards));}
+function saveJournal(){localStorage.setItem('sb3_journal',JSON.stringify(journal));}
 function ymd(d){const dt=new Date(d);return `${dt.getFullYear()}-${dt.getMonth()}-${dt.getDate()}`;}
 function todayYmd(){return ymd(new Date());}
 
@@ -771,6 +896,9 @@ function switchView(v,el){
   document.getElementById('viewBoard').style.display    = v==='board'?'':'none';
   document.getElementById('viewJournal').style.display  = v==='journal'?'':'none';
   document.getElementById('viewReport').style.display   = v==='report'?'':'none';
+  // 업무일지·성과 탭에서는 전역 입력창 숨김
+  const iz=document.getElementById('inputZone');
+  iz.style.display=(v==='journal'||v==='report')?'none':'';
   renderAll();
 }
 function renderAll(){
@@ -943,92 +1071,121 @@ function colDrop(e,col,cat){
 }
 
 // ══════════════════════════════════════════════
-// 업무일지
+// 업무일지 (journal 배열 전용 — cards와 완전 분리)
 // ══════════════════════════════════════════════
-function jNav(d){jnlOffset+=d;renderJournal();}
+function jNav(d){
+  jnlOffset+=d;
+  jnlSearchDate='';jnlSearchMonth='';
+  const dp=document.getElementById('jnlDatePick');if(dp)dp.value='';
+  const mp=document.getElementById('jnlMonthPick');if(mp)mp.value='';
+  renderJournal();
+}
+function jnlGoDate(v){
+  if(!v)return;
+  jnlSearchDate=v;jnlSearchMonth='';
+  // sync jnlOffset to that date
+  const picked=new Date(v+'T00:00:00');
+  const today=new Date();today.setHours(0,0,0,0);
+  jnlOffset=Math.round((picked-today)/86400000);
+  setJnlView('daily',document.getElementById('jvtDaily'));
+}
+function jnlGoMonth(v){
+  if(!v)return;
+  jnlSearchMonth=v;jnlSearchDate='';
+  setJnlView('month',document.getElementById('jvtMonth'));
+}
 function setJnlView(v,el){
   jnlView=v;
-  document.querySelectorAll('.jvt-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');
-  document.getElementById('jnlDailyView').style.display = v==='daily'?'':'none';
+  document.querySelectorAll('.jvt2-btn').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  document.getElementById('jnlDailyView').style.display  = v==='daily'?'':'none';
+  document.getElementById('jnlMonthView').style.display  = v==='month'?'':'none';
   document.getElementById('jnlPeopleView').style.display = v==='people'?'':'none';
   renderJournal();
 }
 
 function renderJournal(){
-  const target=new Date();target.setHours(0,0,0,0);
-  target.setDate(target.getDate()+jnlOffset);
   const WDAYS=['일','월','화','수','목','금','토'];
-  const label=jnlOffset===0?'오늘':jnlOffset===-1?'어제':`${target.getMonth()+1}월 ${target.getDate()}일 (${WDAYS[target.getDay()]})`;
-  document.getElementById('jnlDate').textContent=`${target.getFullYear()}년 ${target.getMonth()+1}월 ${target.getDate()}일 (${WDAYS[target.getDay()]})`;
-
-  const dayCards=getDayCards(cards,target);
-
-  if(jnlView==='daily') renderJnlDaily(dayCards);
-  else renderJnlPeople();
+  if(jnlView==='daily'){
+    const target=new Date();target.setHours(0,0,0,0);
+    target.setDate(target.getDate()+jnlOffset);
+    document.getElementById('jnlDate').textContent=
+      `${target.getFullYear()}년 ${target.getMonth()+1}월 ${target.getDate()}일 (${WDAYS[target.getDay()]})`;
+    const dayEntries=getJnlDay(journal,target);
+    renderJnlDaily(dayEntries);
+  } else if(jnlView==='month'){
+    const ref=jnlSearchMonth?new Date(jnlSearchMonth+'-01'):new Date();
+    document.getElementById('jnlDate').textContent=
+      `${ref.getFullYear()}년 ${ref.getMonth()+1}월 전체`;
+    renderJnlMonth(ref);
+  } else {
+    document.getElementById('jnlDate').textContent='팀원 전체 기록';
+    renderJnlPeople();
+  }
 }
 
-function renderJnlDaily(dayCards){
-  // My work: non-people entries
-  const myWork=dayCards.filter(c=>c.cat!=='people');
-  const teamWork=dayCards.filter(c=>c.cat==='people');
+function getJnlDay(list,day){
+  const d0=new Date(day);d0.setHours(0,0,0,0);
+  const d1=new Date(day);d1.setHours(23,59,59,999);
+  return list.filter(e=>{const d=new Date(e.createdAt);return d>=d0&&d<=d1;});
+}
 
-  // My work timeline
+function renderJnlDaily(entries){
+  const myWork=entries.filter(e=>!e.isPeople);
+  const teamWork=entries.filter(e=>e.isPeople);
+  const compTagMap={강점:'<span class="tag-strength">⭐ 강점</span>',개선:'<span class="tag-improve">🔧 개선</span>',코칭:'<span class="tag-coach">💬 코칭</span>'};
+
   const mw=document.getElementById('jnlMyWork');
   if(!myWork.length){
-    mw.innerHTML=`<div class="jnl-empty">📋 오늘 업무 기록이 없어요<br><small style="color:var(--sub2)">메모를 입력하면 여기에 쌓입니다</small></div>`;
+    mw.innerHTML=`<div class="jnl-empty">📋 이날 업무 기록이 없어요<br><small style="color:var(--sub2)">위 입력창에 기록하면 여기에 쌓입니다</small></div>`;
   } else {
-    mw.innerHTML=myWork.map((c,i,arr)=>{
-      const t=new Date(c.createdAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-      const info=CATS[c.cat];
-      const tags=[c.urgent?'<span class="tag tag-urgent">🚨 긴급</span>':'',...c.tags.slice(0,2).map(d=>`<span class="tag tag-date">📅 ${d}</span>`)].filter(Boolean).join('');
+    mw.innerHTML=myWork.map((e,i,arr)=>{
+      const t=new Date(e.createdAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
       return `<div class="tl-entry">
         <div class="tl-time">${t}</div>
         <div class="tl-dot-wrap">
-          <div class="tl-dot" style="background:${info.hex}"></div>
+          <div class="tl-dot" style="background:var(--c-leader)"></div>
           ${i<arr.length-1?'<div class="tl-line"></div>':''}
         </div>
         <div class="tl-content">
-          <div class="tl-badge" style="background:${info.bg};color:${info.hex}">${info.icon} ${info.label}</div>
-          <button class="tl-del" onclick="delCard(${c.id})">× 삭제</button>
-          <div class="tl-text">${escH(c.text)}</div>
-          ${tags?`<div class="tl-tags">${tags}</div>`:''}
+          <div class="tl-badge" style="background:var(--bg-leader);color:var(--c-leader)">📌 업무기록</div>
+          <button class="tl-del" onclick="delJnlEntry(${e.id})">× 삭제</button>
+          <div class="tl-text">${escH(e.text)}</div>
         </div>
       </div>`;
     }).join('');
   }
 
-  // Team panel: group by person name
   const tm=document.getElementById('jnlTeam');
   if(!teamWork.length){
-    tm.innerHTML=`<div class="no-team">👥 오늘 팀원 관찰 기록이 없어요<br><small style="color:var(--sub2)">@이름 또는 이름님 으로 메모하면<br>자동으로 여기에 분류됩니다</small></div>`;
+    tm.innerHTML=`<div class="no-team">👥 이날 팀원 관찰 기록이 없어요<br><small style="color:var(--sub2)">@이름 으로 입력하면 자동 분류됩니다</small></div>`;
     return;
   }
-  // Group by name
   const personMap={};
-  teamWork.forEach(c=>{
-    const names=(c.names&&c.names.length)?c.names:['미분류'];
-    names.forEach(name=>{
-      if(!personMap[name])personMap[name]=[];
-      personMap[name].push(c);
-    });
+  teamWork.forEach(e=>{
+    const names=(e.names&&e.names.length)?e.names:['미분류'];
+    names.forEach(n=>{if(!personMap[n])personMap[n]=[];personMap[n].push(e);});
   });
   tm.innerHTML=Object.entries(personMap).map(([name,items])=>{
-    const avatar=name!=='미분류'?name[0]:name[0];
-    const uid=`pc_${name}`;
+    const uid=`pc_${name}_${Date.now()}`;
     return `<div class="person-card">
       <div class="pc-head" onclick="togglePC('${uid}')">
-        <div class="pc-avatar">${avatar}</div>
+        <div class="pc-avatar">${name[0]}</div>
         <div class="pc-info">
           <div class="pc-name">${name}</div>
-          <div class="pc-count">오늘 ${items.length}건 기록</div>
+          <div class="pc-count">${items.length}건 기록</div>
         </div>
         <div class="pc-toggle" id="${uid}_arrow">›</div>
       </div>
       <div class="pc-body" id="${uid}">
         <div class="pc-entries">
-          ${items.map(c=>{
-            const t=new Date(c.createdAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-            return `<div class="pc-entry"><div class="pc-date">${t}</div>${escH(c.text)}</div>`;
+          ${items.map(e=>{
+            const t=new Date(e.createdAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+            return `<div class="pc-entry">
+              <div class="pc-date">${t}${e.compTag?` ${compTagMap[e.compTag]}`:''}</div>
+              ${escH(e.text)}
+              <button onclick="event.stopPropagation();delJnlEntry(${e.id})" style="float:right;background:none;border:none;color:var(--sub2);font-size:.7rem;cursor:pointer">×</button>
+            </div>`;
           }).join('')}
         </div>
       </div>
@@ -1036,26 +1193,58 @@ function renderJnlDaily(dayCards){
   }).join('');
 }
 
+function renderJnlMonth(ref){
+  const y=ref.getFullYear(),m=ref.getMonth();
+  const first=new Date(y,m,1),last=new Date(y,m+1,0);last.setHours(23,59,59,999);
+  const monthEntries=journal.filter(e=>{const d=new Date(e.createdAt);return d>=first&&d<=last;});
+  const list=document.getElementById('jnlMonthList');
+  if(!monthEntries.length){
+    list.innerHTML=`<div class="jnl-empty">이달 업무일지 기록이 없습니다</div>`;return;
+  }
+  // group by day
+  const dayMap={};
+  monthEntries.forEach(e=>{
+    const dk=new Date(e.createdAt).toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'short'});
+    if(!dayMap[dk])dayMap[dk]=[];
+    dayMap[dk].push(e);
+  });
+  const compTagMap={강점:'<span class="tag-strength">⭐ 강점</span>',개선:'<span class="tag-improve">🔧 개선</span>',코칭:'<span class="tag-coach">💬 코칭</span>'};
+  list.innerHTML=Object.entries(dayMap).map(([day,entries])=>`
+    <div class="jnl-day-group">
+      <div class="jnl-day-label">📅 ${day}<span class="dcnt">${entries.length}건</span></div>
+      ${entries.map(e=>{
+        const t=new Date(e.createdAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+        const badge=e.isPeople
+          ?`<div class="tl-badge" style="background:var(--bg-people);color:var(--c-people);display:inline-flex;margin-bottom:4px">👥 팀원 관찰${e.names&&e.names.length?' · '+e.names.join(', '):''}</div>`
+          :`<div class="tl-badge" style="background:var(--bg-leader);color:var(--c-leader);display:inline-flex;margin-bottom:4px">📌 업무기록</div>`;
+        return `<div class="tl-entry">
+          <div class="tl-time">${t}</div>
+          <div class="tl-dot-wrap"><div class="tl-dot" style="background:${e.isPeople?'var(--c-people)':'var(--c-leader)'}"></div></div>
+          <div class="tl-content">
+            ${badge}${e.compTag?compTagMap[e.compTag]:''}
+            <button class="tl-del" onclick="delJnlEntry(${e.id})" style="opacity:1">× 삭제</button>
+            <div class="tl-text">${escH(e.text)}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+}
+
 function renderJnlPeople(){
-  // All-time per-person view
   const personMap={};
-  cards.filter(c=>c.cat==='people').forEach(c=>{
-    const names=(c.names&&c.names.length)?c.names:['미분류'];
-    names.forEach(name=>{
-      if(!personMap[name])personMap[name]=[];
-      personMap[name].push(c);
-    });
+  journal.filter(e=>e.isPeople).forEach(e=>{
+    const names=(e.names&&e.names.length)?e.names:['미분류'];
+    names.forEach(n=>{if(!personMap[n])personMap[n]=[];personMap[n].push(e);});
   });
   const grid=document.getElementById('jnlPeopleGrid');
   if(!Object.keys(personMap).length){
-    grid.innerHTML=`<div class="no-team" style="grid-column:1/-1">팀원 기록이 없습니다.<br>@이름 으로 메모를 추가해보세요.</div>`;
-    return;
+    grid.innerHTML=`<div class="no-team" style="grid-column:1/-1">팀원 기록이 없습니다.<br>@이름 으로 업무일지에 기록해보세요.</div>`;return;
   }
   grid.innerHTML=Object.entries(personMap).sort((a,b)=>b[1].length-a[1].length).map(([name,items])=>{
-    const recentDate=new Date(Math.max(...items.map(c=>new Date(c.createdAt)))).toLocaleDateString('ko-KR',{month:'short',day:'numeric'});
-    const s=items.filter(c=>c.compTag==='강점').length;
-    const iv=items.filter(c=>c.compTag==='개선').length;
-    const co=items.filter(c=>c.compTag==='코칭').length;
+    const recentDate=new Date(Math.max(...items.map(e=>new Date(e.createdAt)))).toLocaleDateString('ko-KR',{month:'short',day:'numeric'});
+    const s=items.filter(e=>e.compTag==='강점').length;
+    const iv=items.filter(e=>e.compTag==='개선').length;
+    const co=items.filter(e=>e.compTag==='코칭').length;
     const tot=items.length;
     const ratioBadges=[
       s?`<span class="prc" style="background:#DCFCE7;color:#15803D">⭐ 강점 ${s}</span>`:'',
@@ -1063,11 +1252,10 @@ function renderJnlPeople(){
       co?`<span class="prc" style="background:#F5F3FF;color:#6D28D9">💬 코칭 ${co}</span>`:'',
     ].filter(Boolean).join('');
     const ratioBarHtml=tot?`<div class="ratio-bar" style="margin:8px 0 4px">
-      <div class="rb-s" style="flex:${s}"></div>
-      <div class="rb-i" style="flex:${iv}"></div>
-      <div class="rb-c" style="flex:${co}"></div>
-      <div style="flex:${tot-s-iv-co};background:var(--border2)"></div>
+      <div class="rb-s" style="flex:${s}"></div><div class="rb-i" style="flex:${iv}"></div>
+      <div class="rb-c" style="flex:${co}"></div><div style="flex:${tot-s-iv-co};background:var(--border2)"></div>
     </div>`:'';
+    const compTagMap={강점:'<span class="tag-strength">⭐</span>',개선:'<span class="tag-improve">🔧</span>',코칭:'<span class="tag-coach">💬</span>'};
     return `<div class="person-full-card" style="cursor:pointer" onclick="openPersonDetail('${name}')">
       <div class="pfc-head">
         <div class="pfc-avatar">${name[0]}</div>
@@ -1080,20 +1268,19 @@ function renderJnlPeople(){
       </div>
       ${ratioBarHtml}
       <div class="pfc-entries">
-        ${items.slice(0,3).map(c=>{
-          const dt=new Date(c.createdAt).toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-          const tagMap={강점:'<span class="tag-strength">⭐</span>',개선:'<span class="tag-improve">🔧</span>',코칭:'<span class="tag-coach">💬</span>'};
-          return `<div class="pfc-entry"><div class="pfc-date">${dt}${c.compTag?` ${tagMap[c.compTag]}`:''}</div>${escH(c.text)}</div>`;
+        ${items.slice(0,3).map(e=>{
+          const dt=new Date(e.createdAt).toLocaleString('ko-KR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+          return `<div class="pfc-entry"><div class="pfc-date">${dt}${e.compTag?` ${compTagMap[e.compTag]}`:''}</div>${escH(e.text)}</div>`;
         }).join('')}
-        ${items.length>3?`<div style="font-size:.7rem;color:var(--accent);padding:4px 0;text-align:center">+${items.length-3}건 더 보기 →</div>`:''}
+        ${tot>3?`<div style="font-size:.7rem;color:var(--accent);padding:4px 0;text-align:center">+${tot-3}건 더 보기 →</div>`:''}
       </div>
     </div>`;
   }).join('');
 }
 
+function delJnlEntry(id){journal=journal.filter(e=>e.id!==id);saveJournal();renderJournal();}
 function togglePC(id){
-  const body=document.getElementById(id);
-  const arrow=document.getElementById(id+'_arrow');
+  const body=document.getElementById(id),arrow=document.getElementById(id+'_arrow');
   if(body){body.classList.toggle('open');if(arrow)arrow.classList.toggle('open');}
 }
 
@@ -1351,7 +1538,7 @@ h1{font-size:16px;font-weight:800;border-bottom:2px solid #111;padding-bottom:8p
 // PERSON DETAIL MODAL
 // ══════════════════════════════════════════════
 function openPersonDetail(name){
-  const items=cards.filter(c=>c.cat==='people'&&(c.names||[]).includes(name));
+  const items=journal.filter(e=>e.isPeople&&(e.names||[]).includes(name));
   const total=items.length;
   const s=items.filter(c=>c.compTag==='강점').length;
   const i=items.filter(c=>c.compTag==='개선').length;
