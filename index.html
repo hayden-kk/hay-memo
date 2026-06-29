@@ -1232,7 +1232,7 @@ function saveGS(){gsUrl=document.getElementById('gsUrl').value.trim();localStora
 async function syncGS(card){
   if(!gsUrl)return;
   try{await fetch(gsUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({time:new Date(card.createdAt).toLocaleString('ko-KR'),text:card.text,cat:CATS[card.cat].label,names:(card.names||[]).join('/'),dates:card.tags.join('/'),urgent:card.urgent?'긴급':''})});
+    body:JSON.stringify({time:new Date(card.createdAt).toLocaleString('ko-KR'),text:card.text,cat:CATS[card.cat].label,names:(card.names||[]).join('/'),dates:card.tags.join('/'),urgent:card.urgent?'긴급':'',compTag:card.compTag||'',date:card.date||''})});
     toast('📊 Sheets 저장됨','#059669');
   }catch(e){toast('Sheets 전송 실패','#DC2626');}
 }
