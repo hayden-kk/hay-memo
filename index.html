@@ -111,40 +111,53 @@ button{font-family:var(--font);cursor:pointer;}
 .rpt-btn:hover{background:#ECFDF5;border-color:var(--c-oasis);color:var(--c-oasis);}
 
 /* week grid */
-.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:start;}
 .wday{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);
-  overflow:hidden;min-height:160px;box-shadow:var(--sh-s);}
+  box-shadow:var(--sh-s);display:flex;flex-direction:column;}
 .wday.today{border-color:var(--accent);border-width:2px;}
 .wday-head{padding:6px 8px;background:var(--surface2);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;}
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .dow{font-size:.66rem;font-weight:700;color:var(--sub);}
 .dow.sun{color:#DC2626;}.dow.sat{color:#2563EB;}
 .dnum{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:.78rem;font-weight:700;color:var(--text2);}
+  font-size:.78rem;font-weight:700;color:var(--text2);cursor:pointer;transition:all .15s;}
+.dnum:hover{background:var(--accent-bg);color:var(--accent);}
 .wday.today .dnum{background:var(--accent);color:#fff;}
-.wday-body{padding:4px;display:flex;flex-direction:column;gap:3px;position:relative;}
-.mini{font-size:.67rem;line-height:1.3;padding:2px 5px;border-radius:4px;border-left:3px solid;
-  cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:var(--sh-s);}
-.mini:hover{opacity:.75;}
+.wday.today .dnum:hover{background:var(--accent-h);}
+.wday-body{padding:4px;display:flex;flex-direction:column;gap:3px;
+  max-height:56vh;overflow-y:auto;min-height:60px;}
+.mini{font-size:.67rem;line-height:1.35;padding:3px 5px;border-radius:4px;border-left:3px solid;
+  cursor:pointer;word-break:break-all;box-shadow:var(--sh-s);flex-shrink:0;}
+.mini:hover{opacity:.78;}
 .mini.schedule{border-color:var(--c-schedule);background:var(--bg-schedule);color:#92400E;}
 .mini.oasis{border-color:var(--c-oasis);background:var(--bg-oasis);color:#065F46;}
 .mini.ramen{border-color:var(--c-ramen);background:var(--bg-ramen);color:#9A3412;}
 .mini.people{border-color:var(--c-people);background:var(--bg-people);color:#1E40AF;}
 .mini.leader{border-color:var(--c-leader);background:var(--bg-leader);color:#5B21B6;}
 .mini.issue{border-color:var(--c-issue);background:var(--bg-issue);color:#991B1B;}
-.more-btn{font-size:.64rem;color:var(--accent);text-align:center;cursor:pointer;
-  padding:2px;border-radius:4px;border:none;background:transparent;width:100%;
-  font-family:var(--font);}
-.more-btn:hover{background:var(--accent-bg);}
+.wday-expand{width:100%;padding:3px;border:none;background:transparent;font-size:.62rem;
+  color:var(--sub2);cursor:pointer;font-family:var(--font);border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;gap:3px;flex-shrink:0;}
+.wday-expand:hover{background:var(--accent-bg);color:var(--accent);}
 
-/* day popup */
+/* day popup (month view only) */
 .day-popup{position:absolute;top:0;left:0;right:0;z-index:50;
   background:var(--surface);border:1.5px solid var(--accent);border-radius:var(--r);
-  box-shadow:var(--sh-l);padding:8px;max-height:300px;overflow-y:auto;
-  display:none;}
+  box-shadow:var(--sh-l);padding:8px;max-height:300px;overflow-y:auto;display:none;}
 .day-popup.open{display:block;}
 .day-popup-close{width:100%;text-align:right;background:none;border:none;color:var(--sub);
   font-size:.7rem;cursor:pointer;padding:0 2px 4px;}
+
+/* day expand modal */
+.day-modal{max-width:480px;width:95vw;max-height:82vh;display:flex;flex-direction:column;}
+.dm-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.dm-head h3{font-size:.95rem;font-weight:800;}
+.dm-total{font-size:.73rem;color:var(--sub);background:var(--bg);padding:2px 8px;border-radius:8px;}
+.dm-body{overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:5px;}
+.dm-card{padding:9px 12px;border-radius:var(--rs);border-left:4px solid;font-size:.82rem;
+  line-height:1.55;color:var(--text2);background:var(--surface2);word-break:break-all;}
+.dm-card .dm-cat{font-size:.68rem;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:4px;}
+.dm-card .dm-time{font-size:.63rem;color:var(--sub2);margin-top:4px;}
 
 /* month grid */
 .month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;
@@ -686,6 +699,18 @@ button{font-family:var(--font);cursor:pointer;}
     </div>
   </div>
 </div>
+<div class="modal-bg" id="dayModal">
+  <div class="modal day-modal">
+    <div class="dm-head">
+      <h3 id="dmTitle">—</h3>
+      <span class="dm-total" id="dmTotal"></span>
+    </div>
+    <div class="dm-body" id="dmBody"></div>
+    <div class="mfooter" style="margin-top:10px">
+      <button class="btn-cancel" onclick="closeModal('dayModal')">닫기</button>
+    </div>
+  </div>
+</div>
 <div class="modal-bg" id="personDetailModal">
   <div class="modal pdm">
     <div id="pdmContent"></div>
@@ -974,20 +999,43 @@ function renderWeek(list){
   document.getElementById('calGrid').innerHTML=`<div class="week-grid">${days.map((day,i)=>{
     const isT=day.getTime()===today.getTime(),isSun=day.getDay()===0,isSat=day.getDay()===6;
     const dc=getDayCards(list,day);
-    const vis=dc.slice(0,4),rest=dc.length-4;
-    const uid=`popup_${i}`;
-    return `<div class="wday ${isT?'today':''}" style="position:relative">
-      <div class="wday-head"><span class="dow ${isSun?'sun':''} ${isSat?'sat':''}">${DOWS[i]}</span><span class="dnum">${day.getDate()}</span></div>
-      <div class="wday-body">
-        ${vis.map(c=>miniCard(c)).join('')}
-        ${rest>0?`<button class="more-btn" onclick="toggleDayPopup('${uid}')">+${rest}개 더 보기</button>`:''}
-        <div class="day-popup" id="${uid}">
-          <button class="day-popup-close" onclick="toggleDayPopup('${uid}')">닫기 ×</button>
-          ${dc.map(c=>miniCard(c)).join('')}
-        </div>
+    const dayLabel=`${day.getMonth()+1}월 ${day.getDate()}일 (${DOWS[i]})`;
+    return `<div class="wday ${isT?'today':''}">
+      <div class="wday-head">
+        <span class="dow ${isSun?'sun':''} ${isSat?'sat':''}">${DOWS[i]}</span>
+        <span class="dnum" onclick="openDayModal('${dayLabel}',${day.getFullYear()},${day.getMonth()},${day.getDate()})" title="클릭하면 전체 보기">${day.getDate()}</span>
       </div>
+      <div class="wday-body">
+        ${dc.length?dc.map(c=>miniCard(c)).join(''):'<div style="padding:10px 4px;text-align:center;font-size:.65rem;color:var(--sub2)">—</div>'}
+      </div>
+      ${dc.length>0?`<button class="wday-expand" onclick="openDayModal('${dayLabel}',${day.getFullYear()},${day.getMonth()},${day.getDate()})">⛶ 전체 보기 ${dc.length}건</button>`:''}
     </div>`;
   }).join('')}</div>`;
+}
+
+function openDayModal(label,y,m,d){
+  const day=new Date(y,m,d);
+  const q=document.getElementById('searchBox').value.toLowerCase();
+  const filtered=cards.filter(c=>!q||c.text.toLowerCase().includes(q));
+  const dc=getDayCards(filtered,day);
+  document.getElementById('dmTitle').textContent=label;
+  document.getElementById('dmTotal').textContent=`총 ${dc.length}건`;
+  const catColors={schedule:'var(--c-schedule)',oasis:'var(--c-oasis)',ramen:'var(--c-ramen)',people:'var(--c-people)',leader:'var(--c-leader)',issue:'var(--c-issue)'};
+  const catBgs={schedule:'var(--bg-schedule)',oasis:'var(--bg-oasis)',ramen:'var(--bg-ramen)',people:'var(--bg-people)',leader:'var(--bg-leader)',issue:'var(--bg-issue)'};
+  document.getElementById('dmBody').innerHTML = dc.length
+    ? dc.map(c=>{
+        const info=CATS[c.cat];
+        const t=new Date(c.createdAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+        const tags=[c.urgent?'<span class="tag tag-urgent">🚨 긴급</span>':'',...(c.names||[]).map(n=>`<span class="tag tag-person">@${n}</span>`)].filter(Boolean).join('');
+        return `<div class="dm-card" style="border-left-color:${catColors[c.cat]};background:${catBgs[c.cat]}" onclick="closeModal('dayModal');openDetail(${c.id})">
+          <div class="dm-cat" style="color:${catColors[c.cat]}">${info.icon} ${info.label}</div>
+          ${escH(c.text)}
+          ${tags?`<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">${tags}</div>`:''}
+          <div class="dm-time">${t}</div>
+        </div>`;
+      }).join('')
+    : `<div class="jnl-empty">이날 등록된 메모가 없어요</div>`;
+  document.getElementById('dayModal').classList.add('open');
 }
 
 function renderMonth(list){
@@ -1028,7 +1076,9 @@ function toggleDayPopup(id){
 function getDayCards(list,day){
   const d0=new Date(day);d0.setHours(0,0,0,0);
   const d1=new Date(day);d1.setHours(23,59,59,999);
-  return list.filter(c=>{const cd=new Date(c.date||c.createdAt);return cd>=d0&&cd<=d1;});
+  return list
+    .filter(c=>{const cd=new Date(c.date||c.createdAt);return cd>=d0&&cd<=d1;})
+    .sort((a,b)=>ORDER.indexOf(a.cat)-ORDER.indexOf(b.cat));
 }
 function miniCard(c){
   return `<div class="mini ${c.cat}" onclick="openDetail(${c.id})" title="${escH(c.text)}">${escH(c.text.length>22?c.text.slice(0,22)+'…':c.text)}</div>`;
