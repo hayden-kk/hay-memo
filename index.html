@@ -193,6 +193,30 @@ button{font-family:var(--font);cursor:pointer;}
 .tp-item.leader{border-color:var(--c-leader);}
 .tp-item.issue{border-color:var(--c-issue);}
 
+/* ── Todo panel ── */
+.tp-todo{margin-bottom:12px;padding-bottom:10px;border-bottom:2px dashed var(--border2);}
+.tp-todo-label{font-size:.7rem;font-weight:700;color:var(--sub);margin-bottom:6px;
+  display:flex;align-items:center;gap:5px;}
+.tp-todo-label span{background:#FEF3C7;color:#92400E;padding:1px 6px;border-radius:6px;font-size:.65rem;}
+.todo-item{display:flex;align-items:flex-start;gap:7px;padding:5px 6px;border-radius:var(--rs);
+  background:var(--surface2);margin-bottom:4px;border:1px dashed var(--border2);transition:all .2s;}
+.todo-item.done{opacity:.45;text-decoration:line-through;}
+.todo-cb{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;margin-top:2px;}
+.todo-text{font-size:.76rem;color:var(--text2);line-height:1.4;flex:1;word-break:break-all;}
+.todo-cat{font-size:.62rem;font-weight:700;padding:1px 5px;border-radius:5px;flex-shrink:0;}
+
+/* ── Board week nav ── */
+.board-week-nav{display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.bw-nav{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);
+  background:var(--surface);display:flex;align-items:center;justify-content:center;
+  color:var(--sub);font-size:.85rem;transition:all .15s;}
+.bw-nav:hover{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
+.bw-title{font-size:.88rem;font-weight:700;min-width:160px;text-align:center;}
+.bw-all-btn{padding:4px 10px;border-radius:7px;border:1px solid var(--border);
+  background:var(--surface);font-size:.73rem;font-weight:600;color:var(--sub);transition:all .15s;}
+.bw-all-btn.active,.bw-all-btn:hover{background:var(--accent-bg);border-color:var(--accent);color:var(--accent);}
+.bw-count{font-size:.72rem;color:var(--sub);margin-left:auto;}
+
 /* ════ BOARD ════ */
 .cat-pills{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap;}
 .cpill{display:flex;align-items:center;gap:4px;padding:4px 12px;border-radius:18px;
@@ -592,6 +616,14 @@ button{font-family:var(--font);cursor:pointer;}
 
   <!-- BOARD -->
   <section id="viewBoard" style="display:none">
+    <div class="board-week-nav">
+      <button class="bw-nav" onclick="bwNav(-1)">‹</button>
+      <span class="bw-title" id="bwTitle">—</span>
+      <button class="bw-nav" onclick="bwNav(1)">›</button>
+      <button class="bw-nav" onclick="boardWeekOffset=0;boardAllWeeks=false;renderBoard()" style="width:auto;padding:0 8px;font-size:.7rem;font-weight:600;">이번주</button>
+      <button class="bw-all-btn" id="bwAllBtn" onclick="toggleBoardAll()">전체 보기</button>
+      <span class="bw-count" id="bwCount"></span>
+    </div>
     <div class="cat-pills" id="catPills"></div>
     <div class="board-grid" id="boardGrid"></div>
   </section>
@@ -739,6 +771,8 @@ let jnlSearchMonth = '';  // 'YYYY-MM' or ''
 let rpOffset  = 0;
 let pendingCompTag    = null;
 let pendingJnlCompTag = null;
+let boardWeekOffset   = 0;
+let boardAllWeeks     = false;
 
 const CATS = {
   schedule:{ icon:'📅', label:'일정알림', hex:'#D97706', bg:'var(--bg-schedule)', c:'var(--c-schedule)' },
@@ -793,8 +827,7 @@ function parseDate(text) {
   if(do2){const r=nextDow(do2[1],0);applyTime(r,text);return r;}
   const md=text.match(/(\d{1,2})[월\/\-](\d{1,2})/);
   if(md){const r=new Date(y,parseInt(md[1])-1,parseInt(md[2]));applyTime(r,text);return r;}
-  // 날짜 없으면 오늘로 자동 설정
-  return new Date();
+  return null; // 날짜 없으면 null → To-do로 분류
 }
 function applyTime(date,text){
   const t=text.match(/(?:오전|오후)?\s*(\d{1,2})시(?:\s*(\d{1,2})분)?/);
@@ -931,13 +964,14 @@ function addMemo(){
   const tags=extractTags(text);
   const urgent=/긴급|urgent/i.test(text);
   const compTag=extractCompTag(text)||pendingCompTag||null;
-  const card={id:Date.now(),text,cat,date:date.toISOString(),tags,urgent,names,compTag,createdAt:new Date().toISOString()};
+  const todo = date === null;
+  const card={id:Date.now(),text,cat,date:todo?null:date.toISOString(),tags,urgent,names,compTag,todo,createdAt:new Date().toISOString()};
   cards.unshift(card);save();renderAll();
-  let msg = `${CATS[cat].icon} ${CATS[cat].label}으로 분류`;
+  let msg = todo ? `📋 To-do 등록 (날짜 없음)` : `${CATS[cat].icon} ${CATS[cat].label}으로 분류`;
   if(names.length) msg += ` · 팀원: ${names.join(', ')}`;
   if(compTag) msg += ` · #${compTag}`;
-  toast(msg, CATS[cat].hex);
-  if(Notification.permission==='granted') schedNotif(card,date);
+  toast(msg, todo ? '#6B7280' : CATS[cat].hex);
+  if(!todo && Notification.permission==='granted') schedNotif(card,date);
   if(gsUrl) syncGS(card);
   el.value='';el.style.height='auto';pendingCompTag=null;updatePreview('');
 }
@@ -1076,7 +1110,7 @@ function getDayCards(list,day){
   const d0=new Date(day);d0.setHours(0,0,0,0);
   const d1=new Date(day);d1.setHours(23,59,59,999);
   return list
-    .filter(c=>{const cd=new Date(c.date||c.createdAt);return cd>=d0&&cd<=d1;})
+    .filter(c=>!c.todo && c.date && new Date(c.date)>=d0 && new Date(c.date)<=d1)
     .sort((a,b)=>ORDER.indexOf(a.cat)-ORDER.indexOf(b.cat));
 }
 function miniCard(c){
@@ -1090,31 +1124,100 @@ function renderTodayPanel(){
   const sub=document.getElementById('tpSub');
   tp.textContent=`${today.getMonth()+1}월 ${today.getDate()}일 (${['일','월','화','수','목','금','토'][today.getDay()]})`;
   const todayCards=getDayCards(cards,today);
-  sub.textContent=`오늘 ${todayCards.length}건`;
+  const todoCards=cards.filter(c=>c.todo&&!c.todoDone);
+  sub.textContent=`오늘 ${todayCards.length}건${todoCards.length?` · Todo ${todoCards.length}`:''}`;
   const body=document.getElementById('tpBody');
-  if(!todayCards.length){body.innerHTML=`<div class="tp-empty">📭 오늘 등록된 메모가 없어요</div>`;return;}
-  const grouped={};
-  ORDER.forEach(k=>{const items=todayCards.filter(c=>c.cat===k);if(items.length)grouped[k]=items;});
-  body.innerHTML=Object.entries(grouped).map(([k,items])=>`
-    <div class="tp-cat">
-      <div class="tp-cat-label">${CATS[k].icon} ${CATS[k].label}</div>
-      ${items.map(c=>`<div class="tp-item ${c.cat}" onclick="openDetail(${c.id})">${escH(c.text.length>55?c.text.slice(0,55)+'…':c.text)}</div>`).join('')}
-    </div>`).join('');
+  let html='';
+
+  // To-do 섹션
+  if(todoCards.length){
+    html+=`<div class="tp-todo">
+      <div class="tp-todo-label">☑ To-do <span>${todoCards.length}건</span></div>
+      ${todoCards.map(c=>`
+        <div class="todo-item" id="todo_${c.id}">
+          <input type="checkbox" class="todo-cb" onchange="checkTodo(${c.id},this.checked)">
+          <span class="todo-text">${escH(c.text.length>50?c.text.slice(0,50)+'…':c.text)}</span>
+          <span class="todo-cat" style="background:${CATS[c.cat].bg};color:${CATS[c.cat].hex}">${CATS[c.cat].icon}</span>
+        </div>`).join('')}
+    </div>`;
+  }
+
+  // 오늘 일정
+  if(todayCards.length){
+    const grouped={};
+    ORDER.forEach(k=>{const items=todayCards.filter(c=>c.cat===k);if(items.length)grouped[k]=items;});
+    html+=Object.entries(grouped).map(([k,items])=>`
+      <div class="tp-cat">
+        <div class="tp-cat-label">${CATS[k].icon} ${CATS[k].label}</div>
+        ${items.map(c=>`<div class="tp-item ${c.cat}" onclick="openDetail(${c.id})">${escH(c.text.length>55?c.text.slice(0,55)+'…':c.text)}</div>`).join('')}
+      </div>`).join('');
+  }
+
+  if(!html) html=`<div class="tp-empty">📭 오늘 등록된 메모가 없어요</div>`;
+  body.innerHTML=html;
+}
+
+function checkTodo(id, checked){
+  const c=cards.find(x=>x.id===id);
+  if(!c) return;
+  if(checked){
+    // 체크 → 오늘 날짜로 이동, todo 해제
+    setTimeout(()=>{
+      c.date=new Date().toISOString();
+      c.todo=false;
+      save();renderAll();
+      toast(`${CATS[c.cat].icon} 오늘 일정으로 이동됨`, CATS[c.cat].hex);
+    }, 300); // 체크 애니메이션 잠깐 보여주고
+  }
 }
 
 // ══════════════════════════════════════════════
 // BOARD
 // ══════════════════════════════════════════════
+function bwNav(d){boardWeekOffset+=d;boardAllWeeks=false;renderBoard();}
+function toggleBoardAll(){boardAllWeeks=!boardAllWeeks;renderBoard();}
+
+function getWeekRange(offset){
+  const today=new Date();today.setHours(0,0,0,0);
+  const dow=today.getDay();
+  const mon=new Date(today);mon.setDate(today.getDate()-(dow===0?6:dow-1)+offset*7);
+  const sun=new Date(mon);sun.setDate(mon.getDate()+6);sun.setHours(23,59,59,999);
+  return {mon,sun};
+}
+
 function renderBoard(){
   const q=document.getElementById('searchBox').value.toLowerCase();
-  const counts={};ORDER.forEach(k=>{counts[k]=cards.filter(c=>c.cat===k&&(!q||c.text.toLowerCase().includes(q))).length;});
-  const total=cards.filter(c=>!q||c.text.toLowerCase().includes(q)).length;
+  const allBtn=document.getElementById('bwAllBtn');
+  if(allBtn) allBtn.classList.toggle('active',boardAllWeeks);
+
+  // 주차 범위 계산
+  let weekCards;
+  if(boardAllWeeks){
+    weekCards=cards.filter(c=>!q||c.text.toLowerCase().includes(q));
+    document.getElementById('bwTitle').textContent='전체 누적';
+    document.getElementById('bwCount').textContent=`총 ${weekCards.length}건`;
+  } else {
+    const {mon,sun}=getWeekRange(boardWeekOffset);
+    const mo=mon.getMonth()+1,smo=sun.getMonth()+1,wk=getWeekNum(mon);
+    const rangeStr=mo===smo?`${mo}/${mon.getDate()}~${sun.getDate()}`:`${mo}/${mon.getDate()}~${smo}/${sun.getDate()}`;
+    const label=boardWeekOffset===0?`이번주 (${rangeStr})`:`${mon.getFullYear()}년 ${mo}월 ${wk}주차 (${rangeStr})`;
+    document.getElementById('bwTitle').textContent=label;
+    weekCards=cards.filter(c=>{
+      if(q&&!c.text.toLowerCase().includes(q)) return false;
+      const d=new Date(c.date||c.createdAt);
+      return d>=mon&&d<=sun;
+    });
+    document.getElementById('bwCount').textContent=`${weekCards.length}건`;
+  }
+
+  const counts={};ORDER.forEach(k=>{counts[k]=weekCards.filter(c=>c.cat===k).length;});
   document.getElementById('catPills').innerHTML=
-    `<div class="cpill ${filterCat==='all'?'active':''}" onclick="setFilt('all',this)"><span class="dot" style="background:var(--accent)"></span>전체 ${total}</div>`+
+    `<div class="cpill ${filterCat==='all'?'active':''}" onclick="setFilt('all',this)"><span class="dot" style="background:var(--accent)"></span>전체 ${weekCards.length}</div>`+
     ORDER.map(k=>`<div class="cpill ${filterCat===k?'active':''}" onclick="setFilt('${k}',this)"><span class="dot" style="background:${CATS[k].hex}"></span>${CATS[k].icon} ${CATS[k].label} ${counts[k]}</div>`).join('');
+
   document.getElementById('boardGrid').innerHTML=ORDER.map(k=>{
     const vis=filterCat==='all'||filterCat===k;
-    const list=cards.filter(c=>c.cat===k&&(!q||c.text.toLowerCase().includes(q)));
+    const list=weekCards.filter(c=>c.cat===k);
     return `<div class="col" data-c="${k}" style="${vis?'':'display:none'}"
       ondragover="colOver(event,this)" ondragleave="this.classList.remove('drag-over')" ondrop="colDrop(event,this,'${k}')">
       <div class="col-head"><span class="col-icon">${CATS[k].icon}</span><span class="col-label">${CATS[k].label}</span><span class="col-cnt">${list.length}</span></div>
@@ -1572,7 +1675,7 @@ function renderReport(){
   document.getElementById('rpGrid').innerHTML=`
     <div class="rp-card"><h3>📊 카테고리별 처리량 <span style="margin-left:auto;font-size:.7rem;color:var(--sub);font-weight:400">총 ${mo.length}건</span></h3>${barChart}</div>
     <div class="rp-card"><h3>🔑 기여 키워드 TOP 12</h3>${kwHtml}</div>
-    <div class="rp-card"><h3>🫧 오아시스 · 🍜 라면존 이벤트 <span style="margin-left:auto;font-size:.7rem;color:var(--sub);font-weight:400">${evCards.length}건</span></h3>${evList}</div>
+    <div class="rp-card"><h3>${CATS.oasis.icon} 오아시스 · ${CATS.ramen.icon} 라면존 이벤트 <span style="margin-left:auto;font-size:.7rem;color:var(--sub);font-weight:400">${evCards.length}건</span></h3>${evList}</div>
     <div class="rp-card"><h3>🚨 이슈 처리 <span style="margin-left:auto;font-size:.7rem;color:var(--sub);font-weight:400">${issCards.length}건</span></h3>${issHtml}</div>
     <div class="rp-card" style="grid-column:1/-1"><h3>📌 리더 업무 기록 <span style="margin-left:auto;font-size:.7rem;color:var(--sub);font-weight:400">${ldCards.length}건</span></h3>${ldHtml}</div>`;
 }
