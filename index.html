@@ -723,8 +723,11 @@ button{font-family:var(--font);cursor:pointer;}
     </div>
     <label style="font-size:.74rem;font-weight:600;color:var(--sub);display:block;margin-bottom:4px;">Apps Script 배포 URL</label>
     <input type="text" id="gsUrl" placeholder="https://script.google.com/macros/s/…/exec">
-    <div class="mfooter" style="gap:6px;">
+    <div class="mfooter" style="gap:6px;flex-wrap:wrap;">
       <button class="btn-sec" onclick="exportCSV()">⬇ CSV</button>
+      <button class="btn-sec" onclick="exportJSON()">💾 백업</button>
+      <button class="btn-sec" onclick="document.getElementById('importFile').click()">📥 복원</button>
+      <input type="file" id="importFile" accept="application/json,.json" style="display:none" onchange="importJSON(this)">
       <button class="btn-cancel" onclick="closeModal('gsModal')" style="flex:0 0 auto;padding:7px 12px;">취소</button>
       <button class="btn-primary" onclick="saveGS()">저장</button>
     </div>
@@ -1557,10 +1560,39 @@ function openDetail(id){
     ${tagHtml?`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">${tagHtml}</div>`:''}
     <small style="color:var(--sub2)">${dt}</small>
     <div style="display:flex;gap:5px;margin-top:10px;">
+      <button class="btn-sec" style="flex:1" onclick="editCard(${c.id})">✏ 편집</button>
       <button class="btn-sec" style="flex:1" onclick="openMove(${c.id});closeModal('detailModal')">↕ 이동</button>
       <button class="btn-cancel" onclick="delCard(${c.id});closeModal('detailModal')" style="color:var(--c-issue);border-color:var(--c-issue)">삭제</button>
     </div>`;
   document.getElementById('detailModal').classList.add('open');
+}
+function editCard(id){
+  const c=cards.find(x=>x.id===id);if(!c)return;
+  const info=CATS[c.cat];
+  document.getElementById('detailContent').innerHTML=`
+    <div class="detail-cat" style="background:${info.bg};color:${info.hex}">${info.icon} ${info.label}</div>
+    <textarea id="editText" rows="4" style="width:100%;box-sizing:border-box;padding:10px;border:1.5px solid #d1d5db;border-radius:8px;font:inherit;resize:vertical;margin:8px 0;">${escH(c.text)}</textarea>
+    <small style="color:var(--sub2)">수정하면 이름·날짜·태그·긴급·역량태그가 다시 계산됩니다. (카테고리는 유지 — 바꾸려면 이동)</small>
+    <div style="display:flex;gap:5px;margin-top:10px;">
+      <button class="btn-primary" style="flex:1" onclick="saveCardEdit(${c.id})">저장</button>
+      <button class="btn-cancel" onclick="openDetail(${c.id})">취소</button>
+    </div>`;
+  const ta=document.getElementById('editText');ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);
+}
+function saveCardEdit(id){
+  const c=cards.find(x=>x.id===id);if(!c)return;
+  const nt=document.getElementById('editText').value.trim();
+  if(!nt){toast('내용을 입력하세요','#DC2626');return;}
+  const date=parseDate(nt);
+  c.text=nt;
+  c.names=extractNames(nt);
+  c.tags=extractTags(nt);
+  c.urgent=/긴급|urgent/i.test(nt);
+  c.compTag=extractCompTag(nt)||c.compTag||null;
+  c.todo=date===null;
+  c.date=c.todo?null:date.toISOString();
+  save();renderAll();openDetail(id);
+  toast('수정됨','#059669');
 }
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.modal-bg').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
@@ -1617,6 +1649,55 @@ function exportCSV(){
   cards.forEach(c=>rows.push([new Date(c.createdAt).toLocaleString('ko-KR'),CATS[c.cat].label,'"'+c.text.replace(/"/g,'""')+'"',(c.names||[]).join('/'),c.tags.join('/'),c.urgent?'긴급':'']));
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+rows.map(r=>r.join(',')).join('\n')],{type:'text/csv;charset=utf-8'}));
   a.download=`smartboard_${new Date().toISOString().slice(0,10)}.csv`;a.click();toast('CSV 저장됨','#059669');
+}
+// ── 전체 백업(JSON) / 복원 : 카드 + 업무일지 + 설정 ──
+function exportJSON(){
+  const data={app:'hay-memo',version:1,exportedAt:new Date().toISOString(),cards,journal,gsUrl};
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+  a.download=`haymemo_backup_${new Date().toISOString().slice(0,10)}.json`;a.click();
+  toast('💾 백업(JSON) 저장 완료 — 카드+업무일지','#059669');
+}
+function importJSON(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const data=JSON.parse(reader.result);
+      const inCards=Array.isArray(data)?data:(data.cards||[]);
+      const inJournal=(data&&Array.isArray(data.journal))?data.journal:[];
+      if(!Array.isArray(inCards)) throw new Error('형식 오류');
+      // 카드 병합 (id 기준 중복 제외)
+      const seenC=new Set(cards.map(c=>c.id));let addC=0;
+      inCards.forEach(c=>{
+        if(c&&c.id!=null&&typeof c.text==='string'&&!seenC.has(c.id)){
+          const date=c.date||null;
+          cards.push({
+            id:c.id,text:c.text,
+            cat:CATS[c.cat]?c.cat:'leader',
+            date:date,
+            tags:Array.isArray(c.tags)?c.tags:[],
+            urgent:!!c.urgent,
+            names:Array.isArray(c.names)?c.names:[],
+            compTag:c.compTag||null,
+            todo:('todo' in c)?!!c.todo:(date===null),
+            createdAt:c.createdAt||new Date(c.id).toISOString()
+          });
+          seenC.add(c.id);addC++;
+        }
+      });
+      // 업무일지 병합 (id 기준 중복 제외)
+      const seenJ=new Set(journal.map(j=>j.id));let addJ=0;
+      inJournal.forEach(j=>{
+        if(j&&j.id!=null&&!seenJ.has(j.id)){journal.push(j);seenJ.add(j.id);addJ++;}
+      });
+      cards.sort((a,b)=>b.id-a.id);
+      save();saveJournal();renderAll();
+      toast(`📥 복원 완료 — 카드 ${addC}건 · 업무일지 ${addJ}건 추가`,'#059669');
+    }catch(e){toast('복원 실패: 올바른 백업 파일이 아닙니다','#DC2626');}
+    input.value='';
+  };
+  reader.readAsText(file);
 }
 
 // ══════════════════════════════════════════════
